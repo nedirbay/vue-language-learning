@@ -56,7 +56,7 @@
     "google": "Google",
     "or": "ýa-da",
     "signInSub": "DevHub-da dowam etmek üçin içeri giriň.",
-    "emailPlaceholder": "you@dev.team",
+    "emailPlaceholder": "you{'@'}dev.team",
     "passwordPlaceholder": "Parolyňyz",
     "passwordMin8": "Iň azyndan 8 simwol",
     "freeForever": "Hemişelik mugt. Kredit kartasy talap edilmeýär.",

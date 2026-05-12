@@ -56,7 +56,7 @@
     "google": "Google",
     "or": "veya",
     "signInSub": "DevHub'a devam etmek için giriş yapın.",
-    "emailPlaceholder": "e-posta@adresiniz.com",
+    "emailPlaceholder": "e-posta{'@'}adresiniz.com",
     "passwordPlaceholder": "Şifreniz",
     "passwordMin8": "En az 8 karakter",
     "freeForever": "Sonsuza kadar ücretsiz. Kredi kartı gerekmez.",

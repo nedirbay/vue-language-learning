@@ -56,7 +56,7 @@
     "google": "Google",
     "or": "or",
     "signInSub": "Sign in to continue to DevHub.",
-    "emailPlaceholder": "you@dev.team",
+    "emailPlaceholder": "you{'@'}dev.team",
     "passwordPlaceholder": "Your password",
     "passwordMin8": "At least 8 characters",
     "freeForever": "Free forever. No credit card required.",

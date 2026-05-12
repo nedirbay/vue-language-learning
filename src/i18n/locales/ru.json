@@ -56,7 +56,7 @@
     "google": "Google",
     "or": "или",
     "signInSub": "Войдите, чтобы продолжить в DevHub.",
-    "emailPlaceholder": "you@dev.team",
+    "emailPlaceholder": "you{'@'}dev.team",
     "passwordPlaceholder": "Ваш пароль",
     "passwordMin8": "Минимум 8 символов",
     "freeForever": "Бесплатно навсегда. Кредитная карта не требуется.",
