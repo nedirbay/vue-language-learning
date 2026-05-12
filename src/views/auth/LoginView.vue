@@ -44,12 +44,24 @@
     <div class="divider"><span>or</span></div>
 
     <div class="oauth">
-      <el-button size="large" class="w-full" @click="onOauth('github')">
-        <span class="oauth-label">Continue with GitHub</span>
-      </el-button>
-      <el-button size="large" class="w-full" @click="onOauth('google')">
-        <span class="oauth-label">Continue with Google</span>
-      </el-button>
+      <button type="button" class="oauth-btn" @click="onOauth('github')">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path
+            fill="currentColor"
+            d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.58.11.79-.25.79-.55v-2.13c-3.2.7-3.87-1.36-3.87-1.36-.53-1.34-1.3-1.7-1.3-1.7-1.06-.72.08-.71.08-.71 1.17.08 1.78 1.2 1.78 1.2 1.04 1.79 2.73 1.27 3.4.97.1-.76.41-1.27.74-1.56-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.47.11-3.06 0 0 .97-.31 3.18 1.18a11.05 11.05 0 0 1 5.79 0c2.21-1.49 3.18-1.18 3.18-1.18.63 1.59.23 2.77.11 3.06.74.81 1.19 1.84 1.19 3.1 0 4.42-2.69 5.39-5.26 5.68.42.36.79 1.07.79 2.16v3.2c0 .31.21.67.8.55C20.21 21.39 23.5 17.08 23.5 12 23.5 5.65 18.35.5 12 .5Z"
+          />
+        </svg>
+        <span>Continue with GitHub</span>
+      </button>
+      <button type="button" class="oauth-btn" @click="onOauth('google')">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+          <path fill="#4285F4" d="M23.49 12.27c0-.79-.07-1.54-.2-2.27H12v4.51h6.47c-.28 1.4-1.1 2.58-2.36 3.37v2.8h3.81c2.23-2.05 3.57-5.07 3.57-8.41Z"/>
+          <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.81-2.8c-1.06.71-2.41 1.13-4.12 1.13-3.17 0-5.85-2.14-6.81-5.02H1.27v3.16C3.24 21.31 7.31 24 12 24Z"/>
+          <path fill="#FBBC05" d="M5.19 14.4a7.2 7.2 0 0 1 0-4.79V6.45H1.27a12 12 0 0 0 0 11.1l3.92-3.15Z"/>
+          <path fill="#EA4335" d="M12 4.75c1.77 0 3.36.61 4.61 1.81l3.39-3.39C17.94 1.19 15.24 0 12 0 7.31 0 3.24 2.69 1.27 6.45l3.92 3.16C6.15 6.89 8.83 4.75 12 4.75Z"/>
+        </svg>
+        <span>Continue with Google</span>
+      </button>
     </div>
 
     <p class="muted text-sm text-center mt-6">
@@ -156,10 +168,32 @@ h1 {
 .oauth {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
-.oauth-label {
+.oauth-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+  color: var(--app-text);
+  font-size: 0.95rem;
   font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+.oauth-btn:hover {
+  background: var(--app-surface-2);
+  border-color: var(--app-border-strong);
+}
+.oauth-btn svg {
+  flex-shrink: 0;
 }
 .text-brand {
   color: var(--app-accent);

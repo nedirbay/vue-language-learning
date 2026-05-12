@@ -48,12 +48,10 @@
           <p class="muted">Try a different search or category.</p>
         </div>
         <div v-else class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          <a
+          <RouterLink
             v-for="r in filtered"
             :key="r.id"
-            :href="r.url"
-            target="_blank"
-            rel="noopener"
+            :to="{ name: 'open-source-detail', params: { slug: r.id } }"
             class="oss-card surface"
           >
             <div class="oss-head">
@@ -68,7 +66,7 @@
                 class="fav-btn"
                 :class="{ active: favorites.has(r.id) }"
                 :aria-label="favorites.has(r.id) ? 'Remove from favorites' : 'Add to favorites'"
-                @click.prevent="favorites.toggle(r.id)"
+                @click.prevent.stop="favorites.toggle(r.id)"
               >
                 <el-icon><Star /></el-icon>
               </button>
@@ -87,7 +85,7 @@
             <div class="oss-tags">
               <span v-for="t in r.topics.slice(0, 3)" :key="t" class="tag">#{{ t }}</span>
             </div>
-          </a>
+          </RouterLink>
         </div>
       </div>
     </section>
@@ -96,6 +94,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import { Box, Search, Share, Star, StarFilled } from '@element-plus/icons-vue'
 import { api } from '@/api'
 import type { OpenSourceResource } from '@/types/models'

@@ -73,28 +73,70 @@
       </div>
     </div>
 
-    <Transition name="slide">
-      <div v-if="mobileOpen" class="mobile-menu md:hidden">
-        <RouterLink
-          v-for="link in navLinks"
-          :key="link.to"
-          :to="link.to"
-          class="mobile-link"
-          active-class="active"
+    <Teleport to="body">
+      <Transition name="fade">
+        <div
+          v-if="mobileOpen"
+          class="mobile-backdrop md:hidden"
           @click="mobileOpen = false"
-        >
-          {{ link.label }}
-        </RouterLink>
-        <RouterLink
-          v-if="!auth.isAuthenticated"
-          to="/login"
-          class="mobile-link"
-          @click="mobileOpen = false"
-        >
-          Sign in
-        </RouterLink>
-      </div>
-    </Transition>
+        />
+      </Transition>
+      <Transition name="drawer">
+        <aside v-if="mobileOpen" class="mobile-drawer md:hidden" role="dialog" aria-label="Menu">
+          <div class="drawer-head">
+            <RouterLink to="/" class="flex items-center gap-2 font-extrabold" @click="mobileOpen = false">
+              <span class="logo-mark">D</span>
+              <span>DevHub</span>
+            </RouterLink>
+            <button
+              class="mobile-toggle"
+              aria-label="Close menu"
+              @click="mobileOpen = false"
+            >
+              <el-icon :size="18"><Close /></el-icon>
+            </button>
+          </div>
+          <nav class="drawer-nav">
+            <RouterLink
+              v-for="link in navLinks"
+              :key="link.to"
+              :to="link.to"
+              class="mobile-link"
+              active-class="active"
+              @click="mobileOpen = false"
+            >
+              {{ link.label }}
+            </RouterLink>
+          </nav>
+          <div class="drawer-footer">
+            <template v-if="auth.isAuthenticated">
+              <RouterLink to="/dashboard" class="mobile-link" @click="mobileOpen = false">
+                Dashboard
+              </RouterLink>
+              <RouterLink
+                v-if="auth.isAdmin"
+                to="/admin"
+                class="mobile-link"
+                @click="mobileOpen = false"
+              >
+                Admin panel
+              </RouterLink>
+              <button class="mobile-link text-left" @click="onLogout(); mobileOpen = false">
+                Sign out
+              </button>
+            </template>
+            <template v-else>
+              <RouterLink to="/login" class="mobile-link" @click="mobileOpen = false">
+                Sign in
+              </RouterLink>
+              <RouterLink to="/register" class="mobile-link primary" @click="mobileOpen = false">
+                Get started
+              </RouterLink>
+            </template>
+          </div>
+        </aside>
+      </Transition>
+    </Teleport>
   </header>
 </template>
 
@@ -237,35 +279,103 @@ html.dark .site-header {
   cursor: pointer;
   color: var(--app-text);
 }
+</style>
 
-.mobile-menu {
-  border-top: 1px solid var(--app-border);
+<style>
+/* Mobile drawer is teleported to <body>, so styles cannot be scoped. */
+.mobile-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  background: rgba(7, 9, 26, 0.45);
+  backdrop-filter: blur(2px);
+}
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 71;
+  width: min(86vw, 320px);
   background: var(--app-surface);
-  padding: 8px 16px 16px;
+  border-right: 1px solid var(--app-border);
+  box-shadow: 18px 0 40px -22px rgba(15, 23, 42, 0.5);
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  color: var(--app-text);
+}
+.drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--app-border);
+  font-size: 1.05rem;
+}
+.drawer-head .logo-mark {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #6366f1, #d946ef);
+  color: white;
+  font-weight: 800;
+}
+.drawer-nav {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 12px;
+  gap: 2px;
+  flex: 1;
+}
+.drawer-footer {
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  gap: 2px;
+  border-top: 1px solid var(--app-border);
 }
 .mobile-link {
+  display: block;
   padding: 12px 14px;
   border-radius: 10px;
   color: var(--app-text);
   font-weight: 500;
+  border: 1px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+  width: 100%;
 }
 .mobile-link.active,
 .mobile-link:hover {
   background: var(--app-surface-2);
 }
-
-.slide-enter-active,
-.slide-leave-active {
-  transition:
-    opacity 200ms ease,
-    transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+.mobile-link.primary {
+  background: linear-gradient(135deg, #6366f1, #d946ef);
+  color: white;
+  text-align: center;
+  margin-top: 4px;
 }
-.slide-enter-from,
-.slide-leave-to {
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 200ms ease;
+}
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
-  transform: translateY(-8px);
+}
+
+.drawer-enter-active,
+.drawer-leave-active {
+  transition: transform 260ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.drawer-enter-from,
+.drawer-leave-to {
+  transform: translateX(-100%);
 }
 </style>

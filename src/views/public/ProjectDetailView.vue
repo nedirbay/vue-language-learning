@@ -153,6 +153,38 @@
                     </div>
                   </div>
                 </el-tab-pane>
+                <el-tab-pane :label="`Media (${mediaCount})`" name="media">
+                  <div v-if="project.videoUrl" class="media-video">
+                    <video
+                      :src="project.videoUrl"
+                      :poster="project.coverImageUrl"
+                      controls
+                      preload="metadata"
+                    />
+                  </div>
+                  <div class="media-grid">
+                    <button
+                      v-for="(s, i) in project.screenshots"
+                      :key="s.id"
+                      type="button"
+                      class="media-tile"
+                      @click="openPreview(i)"
+                    >
+                      <img :src="s.url" :alt="s.caption ?? project.title" />
+                      <span v-if="s.caption" class="media-caption">{{ s.caption }}</span>
+                      <span class="media-zoom" aria-hidden="true">
+                        <el-icon><ZoomIn /></el-icon>
+                      </span>
+                    </button>
+                  </div>
+                  <el-image-viewer
+                    v-if="previewIndex !== null"
+                    :url-list="project.screenshots.map((s) => s.url)"
+                    :initial-index="previewIndex"
+                    :hide-on-click-modal="true"
+                    @close="previewIndex = null"
+                  />
+                </el-tab-pane>
               </el-tabs>
             </main>
 
@@ -178,17 +210,7 @@
                   </li>
                 </ul>
               </div>
-              <div class="info-card surface">
-                <h3>Screenshots</h3>
-                <div class="screens">
-                  <img
-                    v-for="s in project.screenshots"
-                    :key="s.id"
-                    :src="s.url"
-                    :alt="s.caption ?? project.title"
-                  />
-                </div>
-              </div>
+
             </aside>
           </div>
         </div>
@@ -211,6 +233,7 @@ import {
   Star,
   StarFilled,
   View,
+  ZoomIn,
 } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { api } from '@/api'
@@ -233,8 +256,18 @@ const favorites = useFavoritesStore()
 const project = ref<Project | null>(null)
 const reviews = ref<Review[]>([])
 const loading = ref(true)
-const activeTab = ref<'overview' | 'reviews' | 'changelog'>('overview')
+const activeTab = ref<'overview' | 'reviews' | 'changelog' | 'media'>('overview')
 const checkoutLoading = ref(false)
+const previewIndex = ref<number | null>(null)
+
+const mediaCount = computed(() => {
+  if (!project.value) return 0
+  return project.value.screenshots.length + (project.value.videoUrl ? 1 : 0)
+})
+
+function openPreview(index: number): void {
+  previewIndex.value = index
+}
 
 const isFav = computed(() => (project.value ? favorites.has(project.value.id) : false))
 
@@ -440,7 +473,10 @@ html.dark .badge-oss {
 .purchase-card {
   padding: 24px;
   position: sticky;
-  top: 80px;
+  top: 88px;
+  align-self: start;
+  max-height: calc(100vh - 100px);
+  overflow-y: auto;
 }
 .price {
   font-size: 1.8rem;
@@ -499,6 +535,11 @@ html.dark .badge-oss {
     grid-template-columns: 1fr;
   }
 }
+.side-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
 .cover {
   margin-bottom: 24px;
   overflow: hidden;
@@ -549,9 +590,6 @@ html.dark .badge-oss {
 .info-card {
   padding: 18px;
 }
-.info-card + .info-card {
-  margin-top: 16px;
-}
 .info-card h3 {
   font-size: 0.92rem;
   font-weight: 700;
@@ -594,14 +632,72 @@ html.dark .badge-oss {
   color: var(--app-success);
   margin-top: 2px;
 }
-.screens {
-  display: grid;
-  gap: 8px;
-}
-.screens img {
-  width: 100%;
-  border-radius: 10px;
+.media-video {
+  margin-bottom: 18px;
+  border-radius: 12px;
+  overflow: hidden;
   border: 1px solid var(--app-border);
+  background: black;
+  aspect-ratio: 16 / 9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.media-video video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.media-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+.media-tile {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+  padding: 0;
+  cursor: zoom-in;
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease;
+}
+.media-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 22px -16px rgba(15, 23, 42, 0.4);
+}
+.media-tile img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+  display: block;
+}
+.media-caption {
+  position: absolute;
+  left: 10px;
+  bottom: 10px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: rgba(7, 9, 26, 0.7);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+.media-zoom {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(7, 9, 26, 0.7);
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .loading-state,

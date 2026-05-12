@@ -442,10 +442,15 @@ export const mockProjects: Project[] = projectFixtures.map((p, idx) => {
     description: p.description ?? '',
     coverImageUrl: p.coverImageUrl ?? '',
     screenshots: [
-      { id: `${p.id}_s1`, url: p.coverImageUrl ?? '' },
-      { id: `${p.id}_s2`, url: baseImg('1517694712202-14dd9538aa97') },
-      { id: `${p.id}_s3`, url: baseImg('1551033406-611cf9a28f67') },
+      { id: `${p.id}_s1`, url: p.coverImageUrl ?? '', caption: 'Overview' },
+      { id: `${p.id}_s2`, url: baseImg('1517694712202-14dd9538aa97'), caption: 'Editor' },
+      { id: `${p.id}_s3`, url: baseImg('1551033406-611cf9a28f67'), caption: 'Settings' },
+      { id: `${p.id}_s4`, url: baseImg('1498050108023-c5249f4df085'), caption: 'Mobile view' },
     ],
+    videoUrl:
+      idx % 2 === 0
+        ? 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+        : undefined,
     category: p.category ?? fallbackCategory,
     tags: p.tags ?? [],
     techStack: p.techStack ?? [],
@@ -851,6 +856,13 @@ export const mockApi = {
   async openSource(): Promise<OpenSourceResource[]> {
     await this.delay(120)
     return mockOpenSourceResources
+  },
+
+  async openSourceResource(slug: string): Promise<OpenSourceResource | null> {
+    await this.delay(120)
+    return (
+      mockOpenSourceResources.find((r) => r.id === slug || r.name === slug) ?? null
+    )
   },
 
   async stats() {

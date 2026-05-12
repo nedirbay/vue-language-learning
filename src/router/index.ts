@@ -9,6 +9,7 @@ import HomeView from '@/views/public/HomeView.vue'
 import ProjectsView from '@/views/public/ProjectsView.vue'
 import ProjectDetailView from '@/views/public/ProjectDetailView.vue'
 import OpenSourceView from '@/views/public/OpenSourceView.vue'
+import OpenSourceDetailView from '@/views/public/OpenSourceDetailView.vue'
 import BlogView from '@/views/public/BlogView.vue'
 import BlogPostView from '@/views/public/BlogPostView.vue'
 import AboutView from '@/views/public/AboutView.vue'
@@ -54,6 +55,12 @@ const routes: RouteRecordRaw[] = [
         name: 'open-source',
         component: OpenSourceView,
         meta: { title: 'Open source' },
+      },
+      {
+        path: 'open-source/:slug',
+        name: 'open-source-detail',
+        component: OpenSourceDetailView,
+        meta: { title: 'Open source resource' },
       },
       { path: 'blog', name: 'blog', component: BlogView, meta: { title: 'Blog' } },
       {

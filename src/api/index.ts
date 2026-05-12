@@ -66,6 +66,10 @@ const liveApi = {
     const { data } = await http.get<OpenSourceResource[]>('/open-source')
     return data
   },
+  async openSourceResource(slug: string): Promise<OpenSourceResource | null> {
+    const { data } = await http.get<OpenSourceResource>(`/open-source/${slug}`)
+    return data
+  },
   async stats(): Promise<StatsSummary> {
     const { data } = await http.get<StatsSummary>('/stats')
     return data
