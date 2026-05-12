@@ -75,7 +75,7 @@
         <div class="card-actions">
           <el-button @click="$router.back()">{{ $t('studio.cancel') }}</el-button>
           <el-button type="primary" :loading="saving" @click="save">
-            {{ isEdit ? $t('studio.saved') : $t('studio.created') }}
+            {{ isEdit ? $t('studio.saveBtn') : $t('studio.createBtn') }}
           </el-button>
         </div>
       </section>

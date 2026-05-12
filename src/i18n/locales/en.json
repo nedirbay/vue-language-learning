@@ -169,6 +169,8 @@
     "delete": "Delete",
     "deleted": "Project deleted.",
     "titleRequired": "A title is required.",
+    "createBtn": "Create project",
+    "saveBtn": "Save changes",
     "created": "Project created.",
     "saved": "Project saved.",
     "notFound": "Project not found.",

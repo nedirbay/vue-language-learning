@@ -169,6 +169,8 @@
     "delete": "Sil",
     "deleted": "Proje silindi.",
     "titleRequired": "Başlık gereklidir.",
+    "createBtn": "Proje oluştur",
+    "saveBtn": "Değişiklikleri kaydet",
     "created": "Proje oluşturuldu.",
     "saved": "Proje kaydedildi.",
     "notFound": "Proje bulunamadı.",
