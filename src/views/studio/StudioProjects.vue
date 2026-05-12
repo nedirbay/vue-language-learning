@@ -3,18 +3,27 @@
     <div class="bar">
       <el-input
         v-model="search"
-        placeholder="Filter by title…"
+        :placeholder="$t('studio.search')"
         clearable
         class="w-80"
       >
         <template #prefix><el-icon><Search /></el-icon></template>
       </el-input>
-      <el-button type="primary" @click="$router.push('/admin/projects/new')">
-        <el-icon class="mr-1"><Plus /></el-icon> New project
+      <el-button type="primary" @click="$router.push('/studio/projects/new')">
+        <el-icon class="mr-1"><Plus /></el-icon> {{ $t('studio.newProject') }}
       </el-button>
     </div>
-    <el-table :data="filtered" class="surface">
-      <el-table-column label="Project" min-width="280">
+
+    <div v-if="!loading && !projects.length" class="surface empty">
+      <p>{{ $t('studio.empty') }}</p>
+      <el-button type="primary" @click="$router.push('/studio/projects/new')">
+        <el-icon class="mr-1"><Plus /></el-icon>
+        {{ $t('studio.startUploading') }}
+      </el-button>
+    </div>
+
+    <el-table v-else :data="filtered" class="surface">
+      <el-table-column :label="$t('studio.table.project')" min-width="280">
         <template #default="{ row }">
           <div class="cell-project">
             <img :src="row.coverImageUrl" :alt="row.title" />
@@ -25,44 +34,33 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="Author" width="180">
-        <template #default="{ row }">
-          <div class="cell-author">
-            <el-avatar :size="24" :src="row.author.avatarUrl" />
-            <span class="text-sm">{{ row.author.fullName }}</span>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="Pricing" width="140">
+      <el-table-column :label="$t('studio.table.pricing')" width="140">
         <template #default="{ row }">
           <el-tag :type="pricingTag(row.pricingType)" effect="light">
             {{ pricingLabel(row.pricingType) }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="Price" width="120">
+      <el-table-column :label="$t('studio.table.price')" width="120">
         <template #default="{ row }">{{ formatPrice(row.priceCents, row.currency) }}</template>
       </el-table-column>
-      <el-table-column label="Status" width="140">
+      <el-table-column :label="$t('studio.table.status')" width="140">
         <template #default="{ row }">
           <el-tag :type="row.status === 'published' ? 'success' : 'info'" effect="light">
             {{ row.status }}
           </el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="Downloads" width="120">
+      <el-table-column :label="$t('studio.table.downloads')" width="120">
         <template #default="{ row }">{{ formatNumber(row.downloadCount) }}</template>
       </el-table-column>
-      <el-table-column label="Rating" width="100">
-        <template #default="{ row }">⭐ {{ row.rating.toFixed(1) }}</template>
-      </el-table-column>
-      <el-table-column label="" width="180" align="right">
+      <el-table-column label="" width="200" align="right">
         <template #default="{ row }">
-          <el-button size="small" @click="$router.push(`/admin/projects/${row.id}/edit`)">
-            Edit
+          <el-button size="small" @click="$router.push(`/studio/projects/${row.id}/edit`)">
+            {{ $t('studio.edit') }}
           </el-button>
           <el-button size="small" type="danger" plain @click="confirmDelete(row)">
-            Delete
+            {{ $t('studio.delete') }}
           </el-button>
         </template>
       </el-table-column>
@@ -74,15 +72,17 @@
 import { computed, onMounted, ref } from 'vue'
 import { Plus, Search } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import { api } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 import type { Project, ProjectPricingType } from '@/types/models'
 import { formatNumber, formatPrice } from '@/utils/format'
 
+const { t } = useI18n()
 const auth = useAuthStore()
-
 const projects = ref<Project[]>([])
 const search = ref('')
+const loading = ref(true)
 
 const filtered = computed(() => {
   const q = search.value.trim().toLowerCase()
@@ -103,23 +103,37 @@ function pricingTag(p: ProjectPricingType): 'success' | 'primary' | 'warning' {
 async function confirmDelete(row: Project): Promise<void> {
   try {
     await ElMessageBox.confirm(
-      `Delete "${row.title}"? This action cannot be undone.`,
-      'Delete project',
-      { confirmButtonText: 'Delete', cancelButtonText: 'Cancel', type: 'warning' },
+      t('studio.deleteConfirm', { title: row.title }),
+      t('studio.deleteTitle'),
+      {
+        confirmButtonText: t('studio.delete'),
+        cancelButtonText: t('studio.cancel'),
+        type: 'warning',
+      },
     )
     if (!auth.user) return
     await api.deleteProject(row.id, auth.user)
     projects.value = projects.value.filter((p) => p.id !== row.id)
-    ElMessage.success('Project deleted.')
-  } catch (e: unknown) {
-    if (e instanceof Error) ElMessage.error(e.message)
+    ElMessage.success(t('studio.deleted'))
+  } catch {
+    /* cancelled */
   }
 }
 
-onMounted(async () => {
-  const res = await api.projects({ pageSize: 50 })
-  projects.value = res.items
-})
+async function load(): Promise<void> {
+  loading.value = true
+  try {
+    if (!auth.user) {
+      projects.value = []
+      return
+    }
+    projects.value = await api.myProjects(auth.user.id)
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(load)
 </script>
 
 <style scoped>
@@ -141,9 +155,13 @@ onMounted(async () => {
   object-fit: cover;
   border-radius: 6px;
 }
-.cell-author {
+.empty {
+  padding: 32px;
+  border-radius: 14px;
   display: flex;
+  flex-direction: column;
+  gap: 16px;
   align-items: center;
-  gap: 8px;
+  text-align: center;
 }
 </style>

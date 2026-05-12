@@ -75,45 +75,23 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import {
   ArrowLeft,
-  Document,
   Promotion,
   Share,
-  Star,
   StarFilled,
-  WarningFilled,
 } from '@element-plus/icons-vue'
 import { api } from '@/api'
 import type { OpenSourceResource } from '@/types/models'
 import { formatNumber } from '@/utils/format'
-import { useFavoritesStore } from '@/stores/favorites'
 
 const route = useRoute()
-const favorites = useFavoritesStore()
 
 const resource = ref<OpenSourceResource | null>(null)
 const allResources = ref<OpenSourceResource[]>([])
 const loading = ref(true)
-
-const ownerName = computed(() => {
-  if (!resource.value) return ''
-  const parts = resource.value.fullName.split('/')
-  return parts.length > 1 ? parts[0] : resource.value.fullName
-})
-
-const related = computed(() => {
-  if (!resource.value) return []
-  return allResources.value
-    .filter(
-      (r) =>
-        r.id !== resource.value!.id &&
-        (r.category === resource.value!.category || r.language === resource.value!.language),
-    )
-    .slice(0, 5)
-})
 
 async function load(slug: string): Promise<void> {
   loading.value = true

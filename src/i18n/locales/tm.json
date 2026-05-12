@@ -135,5 +135,52 @@
     "sub": "DevHub-y gurmak dowamynda ýüze çykan pikirler we tejribeler.",
     "readTime": "{minutes} min",
     "back": "Ähli makalalar"
+  },
+  "userMenu": {
+    "dashboard": "Panel",
+    "purchases": "Satyn alanlarym",
+    "favorites": "Saýlanan",
+    "settings": "Sazlamalar",
+    "studio": "Studio",
+    "adminPanel": "Admin paneli",
+    "signOut": "Çykmak"
+  },
+  "studio": {
+    "title": "Studio",
+    "subtitle": "Öz ýüklän projeleriňizi dolandyryň.",
+    "viewSite": "Sahypa geçmek",
+    "overview": "Umumy maglumat",
+    "myProjects": "Meniň projelerim",
+    "newProject": "Täze proýekt",
+    "editProject": "Proýekti redaktirlemek",
+    "search": "Ady boýunça gözlemek…",
+    "empty": "Heniz proýekt ýüklemediňiz.",
+    "startUploading": "Ilkinji proýektiňizi ýükläň",
+    "openListing": "Sahypada açmak",
+    "stats": {
+      "total": "Jemi proýekt",
+      "published": "Çap edilen",
+      "drafts": "Çernowik",
+      "downloads": "Jemi göçürmeler"
+    },
+    "deleteConfirm": "\"{title}\" pozulsynmy? Bu yza dolanyp bolmaýan amal.",
+    "deleteTitle": "Proýekti pozmak",
+    "cancel": "Bes etmek",
+    "delete": "Pozmak",
+    "deleted": "Proýekt pozuldy.",
+    "titleRequired": "At hökmany.",
+    "created": "Proýekt döredildi.",
+    "saved": "Proýekt saklandy.",
+    "notFound": "Proýekt tapylmady.",
+    "noPermission": "Bu proýekti redaktirlemäge rugsadyňyz ýok.",
+    "edit": "Redaktirlemek",
+    "table": {
+      "project": "Proýekt",
+      "pricing": "Bahalama",
+      "price": "Baha",
+      "status": "Status",
+      "downloads": "Göçürmeler",
+      "updated": "Üýtgän"
+    }
   }
 }

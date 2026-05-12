@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { ForbiddenException, Injectable, NotFoundException } from '@nestjs/common'
 import { Prisma } from '@prisma/client'
 import { PrismaService } from '../prisma/prisma.service'
 import { CreateProjectDto } from './dto/create-project.dto'
 import { UpdateProjectDto } from './dto/update-project.dto'
 import { QueryProjectsDto } from './dto/query-projects.dto'
+import type { PublicUser } from '../auth/auth.service'
 
 @Injectable()
 export class ProjectsService {
@@ -116,7 +117,25 @@ export class ProjectsService {
     })
   }
 
-  update(id: string, dto: UpdateProjectDto) {
+  listByAuthor(authorId: string) {
+    return this.prisma.project.findMany({
+      where: { authorId },
+      orderBy: { updatedAt: 'desc' },
+      include: { author: true, category: true, tags: true },
+    })
+  }
+
+  private async ensureOwnerOrAdmin(id: string, user: PublicUser) {
+    const existing = await this.prisma.project.findUnique({ where: { id } })
+    if (!existing) throw new NotFoundException('Project not found')
+    if (user.role !== 'ADMIN' && existing.authorId !== user.id) {
+      throw new ForbiddenException('You do not have permission to modify this project')
+    }
+    return existing
+  }
+
+  async update(id: string, dto: UpdateProjectDto, user: PublicUser) {
+    await this.ensureOwnerOrAdmin(id, user)
     return this.prisma.project.update({
       where: { id },
       data: {
@@ -129,9 +148,17 @@ export class ProjectsService {
         currency: dto.currency,
         techStack: dto.techStack,
         features: dto.features,
-        status: dto.status,
-        featured: dto.featured,
-        trending: dto.trending,
+        // Only admins can flip featured / trending / status to PUBLISHED for moderation
+        ...(user.role === 'ADMIN'
+          ? {
+              status: dto.status,
+              featured: dto.featured,
+              trending: dto.trending,
+            }
+          : {
+              // Developers can keep their projects in DRAFT or ARCHIVED themselves
+              ...(dto.status && dto.status !== 'PUBLISHED' ? { status: dto.status } : {}),
+            }),
         githubUrl: dto.githubUrl,
         liveDemoUrl: dto.liveDemoUrl,
         downloadUrl: dto.downloadUrl,
@@ -142,7 +169,8 @@ export class ProjectsService {
     })
   }
 
-  remove(id: string) {
+  async remove(id: string, user: PublicUser) {
+    await this.ensureOwnerOrAdmin(id, user)
     return this.prisma.project.delete({ where: { id } })
   }
 }

@@ -7,7 +7,9 @@ import type {
   Order,
   PaginatedResponse,
   Project,
+  ProjectPricingType,
   ProjectQuery,
+  ProjectStatus,
   Review,
   Tag,
   Testimonial,
@@ -94,12 +96,23 @@ const otherUsers: User[] = [
 
 export const mockUsers: User[] = [adminUser, regularUser, ...otherUsers]
 
-const author = {
-  id: adminUser.id,
-  username: adminUser.username,
-  fullName: adminUser.fullName,
-  avatarUrl: adminUser.avatarUrl,
+type AuthorRef = Pick<User, 'id' | 'username' | 'fullName' | 'avatarUrl'>
+
+function toAuthor(u: User): AuthorRef {
+  return {
+    id: u.id,
+    username: u.username,
+    fullName: u.fullName,
+    avatarUrl: u.avatarUrl,
+  }
 }
+
+const author = toAuthor(adminUser)
+const projectAuthors: AuthorRef[] = [
+  toAuthor(adminUser),
+  toAuthor(regularUser),
+  ...otherUsers.filter((u) => u.status === 'active').map(toAuthor),
+]
 
 export const mockCategories: Category[] = [
   { id: 'cat_starter', name: 'Starter Kits', slug: 'starter-kits', icon: 'Box', projectCount: 18 },
@@ -481,7 +494,7 @@ export const mockProjects: Project[] = projectFixtures.map((p, idx) => {
       { version: '1.3.0', date: daysAgo(30), notes: 'Performance improvements, new theme.' },
       { version: '1.2.0', date: daysAgo(60), notes: 'Initial public release.' },
     ],
-    author,
+    author: projectAuthors[idx % projectAuthors.length],
     createdAt: daysAgo(90 + idx * 5),
     updatedAt: daysAgo(idx * 2),
   }
@@ -757,9 +770,34 @@ export const mockApi = {
 
   async login(email: string, password: string): Promise<AuthResponse> {
     await this.delay()
-    const isAdmin = email.toLowerCase().includes('admin')
-    const user = isAdmin ? adminUser : { ...regularUser, email }
     if (!password || password.length < 4) throw new Error('Invalid credentials')
+    const lower = email.toLowerCase()
+    const isAdmin = lower.includes('admin')
+    // Match an existing seeded user by email so a developer keeps the same projects they uploaded
+    const seeded = mockUsers.find((u) => u.email.toLowerCase() === lower)
+    let user: User
+    if (isAdmin) {
+      user = adminUser
+    } else if (seeded) {
+      user = seeded
+    } else {
+      // Promote unknown logins to a developer-scoped user keyed off their email
+      const username = lower.split('@')[0] || 'developer'
+      user = {
+        id: `usr_${username}`,
+        email,
+        username,
+        fullName: username.charAt(0).toUpperCase() + username.slice(1),
+        avatarUrl: `https://api.dicebear.com/9.x/notionists/svg?seed=${username}`,
+        role: 'user',
+        emailVerified: true,
+        status: 'active',
+        createdAt: new Date().toISOString(),
+      }
+      if (!mockUsers.find((u) => u.id === user.id)) {
+        mockUsers.push(user)
+      }
+    }
     return {
       user,
       tokens: { accessToken: `mock_access_${user.id}`, refreshToken: `mock_refresh_${user.id}` },
@@ -769,7 +807,7 @@ export const mockApi = {
   async register(payload: { email: string; password: string; username: string; fullName: string }): Promise<AuthResponse> {
     await this.delay()
     const user: User = {
-      id: `usr_${Date.now()}`,
+      id: `usr_${payload.username || Date.now()}`,
       email: payload.email,
       username: payload.username,
       fullName: payload.fullName,
@@ -779,6 +817,7 @@ export const mockApi = {
       status: 'active',
       createdAt: new Date().toISOString(),
     }
+    if (!mockUsers.find((u) => u.id === user.id)) mockUsers.push(user)
     return {
       user,
       tokens: { accessToken: `mock_access_${user.id}`, refreshToken: `mock_refresh_${user.id}` },
@@ -907,4 +946,120 @@ export const mockApi = {
       url: `#/checkout/mock-success?projectId=${projectId}`,
     }
   },
+
+  async myProjects(authorId: string): Promise<Project[]> {
+    await this.delay(120)
+    return mockProjects.filter((p) => p.author.id === authorId)
+  },
+
+  async projectById(id: string): Promise<Project | null> {
+    await this.delay(80)
+    return mockProjects.find((p) => p.id === id) ?? null
+  },
+
+  async createProject(input: ProjectInput, currentUser: User): Promise<Project> {
+    await this.delay(180)
+    const category =
+      mockCategories.find((c) => c.slug === input.categorySlug) ?? mockCategories[0]
+    const now = new Date().toISOString()
+    const id = `prj_${currentUser.username}_${Date.now()}`
+    const next: Project = {
+      id,
+      slug: input.slug || id,
+      title: input.title,
+      shortDescription: input.shortDescription,
+      description: input.description,
+      coverImageUrl:
+        input.coverImageUrl ||
+        'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=1200&q=70',
+      screenshots: [],
+      videoUrl: undefined,
+      category,
+      tags: [],
+      techStack: input.techStack,
+      pricingType: input.pricingType,
+      priceCents: input.pricingType === 'paid' ? input.priceCents : 0,
+      currency: 'USD',
+      status: input.status,
+      featured: false,
+      trending: false,
+      rating: 0,
+      reviewCount: 0,
+      likeCount: 0,
+      viewCount: 0,
+      downloadCount: 0,
+      githubUrl: input.githubUrl || undefined,
+      liveDemoUrl: input.liveDemoUrl || undefined,
+      documentationUrl: undefined,
+      downloadUrl: undefined,
+      installation: undefined,
+      features: [],
+      changelog: [],
+      author: toAuthor(currentUser),
+      createdAt: now,
+      updatedAt: now,
+    }
+    mockProjects.unshift(next)
+    return next
+  },
+
+  async updateProject(
+    id: string,
+    input: ProjectInput,
+    currentUser: User,
+  ): Promise<Project> {
+    await this.delay(160)
+    const idx = mockProjects.findIndex((p) => p.id === id)
+    if (idx === -1) throw new Error('Project not found')
+    const existing = mockProjects[idx]
+    if (currentUser.role !== 'admin' && existing.author.id !== currentUser.id) {
+      throw new Error('You do not have permission to edit this project')
+    }
+    const category =
+      mockCategories.find((c) => c.slug === input.categorySlug) ?? existing.category
+    const next: Project = {
+      ...existing,
+      title: input.title,
+      slug: input.slug || existing.slug,
+      shortDescription: input.shortDescription,
+      description: input.description,
+      coverImageUrl: input.coverImageUrl || existing.coverImageUrl,
+      category,
+      techStack: input.techStack,
+      pricingType: input.pricingType,
+      priceCents: input.pricingType === 'paid' ? input.priceCents : 0,
+      status: input.status,
+      githubUrl: input.githubUrl || existing.githubUrl,
+      liveDemoUrl: input.liveDemoUrl || existing.liveDemoUrl,
+      updatedAt: new Date().toISOString(),
+    }
+    mockProjects[idx] = next
+    return next
+  },
+
+  async deleteProject(id: string, currentUser: User): Promise<void> {
+    await this.delay(120)
+    const idx = mockProjects.findIndex((p) => p.id === id)
+    if (idx === -1) return
+    const existing = mockProjects[idx]
+    if (currentUser.role !== 'admin' && existing.author.id !== currentUser.id) {
+      throw new Error('You do not have permission to delete this project')
+    }
+    mockProjects.splice(idx, 1)
+  },
+}
+
+export interface ProjectInput {
+  title: string
+  slug: string
+  shortDescription: string
+  description: string
+  coverImageUrl: string
+  categorySlug: string
+  pricingType: ProjectPricingType
+  priceCents: number
+  techStack: string[]
+  githubUrl?: string
+  liveDemoUrl?: string
+  status: ProjectStatus
 }

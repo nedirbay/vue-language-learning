@@ -54,21 +54,24 @@
             <template #dropdown>
               <el-dropdown-menu>
                 <el-dropdown-item @click="$router.push('/dashboard')">
-                  Dashboard
+                  {{ $t('userMenu.dashboard') }}
                 </el-dropdown-item>
                 <el-dropdown-item @click="$router.push('/dashboard/purchases')">
-                  My purchases
+                  {{ $t('userMenu.purchases') }}
                 </el-dropdown-item>
                 <el-dropdown-item @click="$router.push('/dashboard/favorites')">
-                  Favorites
+                  {{ $t('userMenu.favorites') }}
                 </el-dropdown-item>
                 <el-dropdown-item @click="$router.push('/dashboard/settings')">
-                  Settings
+                  {{ $t('userMenu.settings') }}
                 </el-dropdown-item>
-                <el-dropdown-item v-if="auth.isAdmin" divided @click="$router.push('/admin')">
-                  Admin panel
+                <el-dropdown-item divided @click="$router.push('/studio/projects')">
+                  {{ $t('userMenu.studio') }}
                 </el-dropdown-item>
-                <el-dropdown-item divided @click="onLogout">Sign out</el-dropdown-item>
+                <el-dropdown-item v-if="auth.isAdmin" @click="$router.push('/admin')">
+                  {{ $t('userMenu.adminPanel') }}
+                </el-dropdown-item>
+                <el-dropdown-item divided @click="onLogout">{{ $t('userMenu.signOut') }}</el-dropdown-item>
               </el-dropdown-menu>
             </template>
           </el-dropdown>
@@ -133,7 +136,10 @@
           <div class="drawer-footer">
             <template v-if="auth.isAuthenticated">
               <RouterLink to="/dashboard" class="mobile-link" @click="mobileOpen = false">
-                Dashboard
+                {{ $t('userMenu.dashboard') }}
+              </RouterLink>
+              <RouterLink to="/studio/projects" class="mobile-link" @click="mobileOpen = false">
+                {{ $t('userMenu.studio') }}
               </RouterLink>
               <RouterLink
                 v-if="auth.isAdmin"
@@ -141,10 +147,10 @@
                 class="mobile-link"
                 @click="mobileOpen = false"
               >
-                Admin panel
+                {{ $t('userMenu.adminPanel') }}
               </RouterLink>
               <button class="mobile-link text-left" @click="onLogout(); mobileOpen = false">
-                Sign out
+                {{ $t('userMenu.signOut') }}
               </button>
             </template>
             <template v-else>

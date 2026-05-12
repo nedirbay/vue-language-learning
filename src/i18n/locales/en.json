@@ -135,5 +135,52 @@
     "sub": "Ideas, lessons, and tangents from building DevHub.",
     "readTime": "{minutes} min",
     "back": "All posts"
+  },
+  "userMenu": {
+    "dashboard": "Dashboard",
+    "purchases": "My purchases",
+    "favorites": "Favorites",
+    "settings": "Settings",
+    "studio": "Studio",
+    "adminPanel": "Admin panel",
+    "signOut": "Sign out"
+  },
+  "studio": {
+    "title": "Studio",
+    "subtitle": "Manage the projects you have uploaded.",
+    "viewSite": "View site",
+    "overview": "Overview",
+    "myProjects": "My projects",
+    "newProject": "New project",
+    "editProject": "Edit project",
+    "search": "Filter by title…",
+    "empty": "You haven't uploaded any projects yet.",
+    "startUploading": "Upload your first project",
+    "openListing": "Open listing",
+    "stats": {
+      "total": "Total projects",
+      "published": "Published",
+      "drafts": "Drafts",
+      "downloads": "Total downloads"
+    },
+    "deleteConfirm": "Delete \"{title}\"? This cannot be undone.",
+    "deleteTitle": "Delete project",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "deleted": "Project deleted.",
+    "titleRequired": "A title is required.",
+    "created": "Project created.",
+    "saved": "Project saved.",
+    "notFound": "Project not found.",
+    "noPermission": "You don't have permission to edit this project.",
+    "edit": "Edit",
+    "table": {
+      "project": "Project",
+      "pricing": "Pricing",
+      "price": "Price",
+      "status": "Status",
+      "downloads": "Downloads",
+      "updated": "Updated"
+    }
   }
 }

@@ -35,6 +35,11 @@ import AdminBlog from '@/views/admin/AdminBlog.vue'
 import AdminComments from '@/views/admin/AdminComments.vue'
 import AdminSettings from '@/views/admin/AdminSettings.vue'
 
+import StudioLayout from '@/layouts/StudioLayout.vue'
+import StudioOverview from '@/views/studio/StudioOverview.vue'
+import StudioProjects from '@/views/studio/StudioProjects.vue'
+import StudioProjectEditor from '@/views/studio/StudioProjectEditor.vue'
+
 import { useAuthStore } from '@/stores/auth'
 
 const routes: RouteRecordRaw[] = [
@@ -187,6 +192,37 @@ const routes: RouteRecordRaw[] = [
         name: 'admin-settings',
         component: AdminSettings,
         meta: { title: 'Platform settings', subtitle: 'Branding and policies.' },
+      },
+    ],
+  },
+  {
+    path: '/studio',
+    component: StudioLayout,
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'studio',
+        component: StudioOverview,
+        meta: { titleKey: 'studio.overview', subtitleKey: 'studio.subtitle' },
+      },
+      {
+        path: 'projects',
+        name: 'studio-projects',
+        component: StudioProjects,
+        meta: { titleKey: 'studio.myProjects', subtitleKey: 'studio.subtitle' },
+      },
+      {
+        path: 'projects/new',
+        name: 'studio-project-new',
+        component: StudioProjectEditor,
+        meta: { titleKey: 'studio.newProject', subtitleKey: 'studio.subtitle' },
+      },
+      {
+        path: 'projects/:id/edit',
+        name: 'studio-project-edit',
+        component: StudioProjectEditor,
+        meta: { titleKey: 'studio.editProject', subtitleKey: 'studio.subtitle' },
       },
     ],
   },

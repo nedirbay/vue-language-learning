@@ -135,5 +135,52 @@
     "sub": "DevHub'ı inşa ederken ortaya çıkan fikirler, dersler ve düşünceler.",
     "readTime": "{minutes} dk",
     "back": "Tüm yazılar"
+  },
+  "userMenu": {
+    "dashboard": "Panel",
+    "purchases": "Satın aldıklarım",
+    "favorites": "Favoriler",
+    "settings": "Ayarlar",
+    "studio": "Stüdyo",
+    "adminPanel": "Yönetici paneli",
+    "signOut": "Çıkış yap"
+  },
+  "studio": {
+    "title": "Stüdyo",
+    "subtitle": "Yüklediğin projeleri yönet.",
+    "viewSite": "Siteye git",
+    "overview": "Genel bakış",
+    "myProjects": "Projelerim",
+    "newProject": "Yeni proje",
+    "editProject": "Projeyi düzenle",
+    "search": "Başlığa göre filtrele…",
+    "empty": "Henüz proje yüklemedin.",
+    "startUploading": "İlk projeni yükle",
+    "openListing": "Listede aç",
+    "stats": {
+      "total": "Toplam proje",
+      "published": "Yayında",
+      "drafts": "Taslak",
+      "downloads": "Toplam indirme"
+    },
+    "deleteConfirm": "\"{title}\" silinsin mi? Bu işlem geri alınamaz.",
+    "deleteTitle": "Projeyi sil",
+    "cancel": "Vazgeç",
+    "delete": "Sil",
+    "deleted": "Proje silindi.",
+    "titleRequired": "Başlık gereklidir.",
+    "created": "Proje oluşturuldu.",
+    "saved": "Proje kaydedildi.",
+    "notFound": "Proje bulunamadı.",
+    "noPermission": "Bu projeyi düzenleme yetkin yok.",
+    "edit": "Düzenle",
+    "table": {
+      "project": "Proje",
+      "pricing": "Fiyatlandırma",
+      "price": "Fiyat",
+      "status": "Durum",
+      "downloads": "İndirmeler",
+      "updated": "Güncellendi"
+    }
   }
 }

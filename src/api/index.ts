@@ -17,6 +17,9 @@ import type {
 import { http, USE_MOCK } from './http'
 import { mockApi } from './mock-data'
 
+import type { ProjectInput } from './mock-data'
+export type { ProjectInput } from './mock-data'
+
 const liveApi = {
   async login(email: string, password: string): Promise<AuthResponse> {
     const { data } = await http.post<AuthResponse>('/auth/login', { email, password })
@@ -101,6 +104,25 @@ const liveApi = {
   async checkoutSession(projectId: string): Promise<{ url: string; sessionId: string }> {
     const { data } = await http.post<{ url: string; sessionId: string }>(`/payments/checkout`, { projectId })
     return data
+  },
+  async myProjects(_authorId: string): Promise<Project[]> {
+    const { data } = await http.get<Project[]>('/projects/mine')
+    return data
+  },
+  async projectById(id: string): Promise<Project | null> {
+    const { data } = await http.get<Project>(`/projects/by-id/${id}`)
+    return data
+  },
+  async createProject(input: ProjectInput, _currentUser: User): Promise<Project> {
+    const { data } = await http.post<Project>('/projects', input)
+    return data
+  },
+  async updateProject(id: string, input: ProjectInput, _currentUser: User): Promise<Project> {
+    const { data } = await http.put<Project>(`/projects/${id}`, input)
+    return data
+  },
+  async deleteProject(id: string, _currentUser: User): Promise<void> {
+    await http.delete(`/projects/${id}`)
   },
 }
 

@@ -3,7 +3,7 @@
     <div class="editor-grid">
       <section class="surface card form-card">
         <header class="card-head">
-          <h3>{{ isEdit ? 'Edit project' : 'New project' }}</h3>
+          <h3>{{ isEdit ? $t('studio.editProject') : $t('studio.newProject') }}</h3>
           <p class="muted text-sm">
             All fields update the live preview on the right.
           </p>
@@ -64,9 +64,7 @@
               placeholder="## Overview…"
             />
           </el-form-item>
-          <div class="flex justify-between items-center mt-2">
-            <el-checkbox v-model="form.featured">Featured</el-checkbox>
-            <el-checkbox v-model="form.trending">Trending</el-checkbox>
+          <div class="flex justify-end mt-2">
             <el-radio-group v-model="form.status">
               <el-radio-button label="draft">Draft</el-radio-button>
               <el-radio-button label="published">Published</el-radio-button>
@@ -75,9 +73,9 @@
           </div>
         </el-form>
         <div class="card-actions">
-          <el-button @click="$router.back()">Cancel</el-button>
+          <el-button @click="$router.back()">{{ $t('studio.cancel') }}</el-button>
           <el-button type="primary" :loading="saving" @click="save">
-            {{ isEdit ? 'Save changes' : 'Create project' }}
+            {{ isEdit ? $t('studio.saved') : $t('studio.created') }}
           </el-button>
         </div>
       </section>
@@ -113,6 +111,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
+import { useI18n } from 'vue-i18n'
 import { api, type ProjectInput } from '@/api'
 import { useAuthStore } from '@/stores/auth'
 import type { Category, Project, ProjectPricingType, ProjectStatus } from '@/types/models'
@@ -130,14 +129,13 @@ interface ProjectForm {
   techStackRaw: string
   githubUrl: string
   liveDemoUrl: string
-  featured: boolean
-  trending: boolean
   status: ProjectStatus
 }
 
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
+const { t } = useI18n()
 
 const isEdit = computed(() => Boolean(route.params.id))
 const categories = ref<Category[]>([])
@@ -156,8 +154,6 @@ const form = reactive<ProjectForm>({
   techStackRaw: 'Vue 3, TypeScript, Tailwind',
   githubUrl: '',
   liveDemoUrl: '',
-  featured: false,
-  trending: false,
   status: 'draft',
 })
 
@@ -193,8 +189,6 @@ function fillFromProject(p: Project): void {
   form.techStackRaw = p.techStack.join(', ')
   form.githubUrl = p.githubUrl ?? ''
   form.liveDemoUrl = p.liveDemoUrl ?? ''
-  form.featured = p.featured
-  form.trending = p.trending
   form.status = p.status
 }
 
@@ -208,10 +202,7 @@ function toInput(): ProjectInput {
     categorySlug: form.categorySlug,
     pricingType: form.pricingType,
     priceCents: form.priceCents,
-    techStack: form.techStackRaw
-      .split(',')
-      .map((s) => s.trim())
-      .filter(Boolean),
+    techStack: techList.value,
     githubUrl: form.githubUrl || undefined,
     liveDemoUrl: form.liveDemoUrl || undefined,
     status: form.status,
@@ -220,25 +211,25 @@ function toInput(): ProjectInput {
 
 async function save(): Promise<void> {
   if (!form.title.trim()) {
-    ElMessage.warning('A title is required.')
+    ElMessage.warning(t('studio.titleRequired'))
     return
   }
   if (!auth.user) {
-    ElMessage.warning('Please sign in.')
+    ElMessage.warning(t('auth.pleaseSignInToPurchase'))
     return
   }
   saving.value = true
   try {
     if (isEdit.value) {
       await api.updateProject(String(route.params.id), toInput(), auth.user)
-      ElMessage.success('Project saved.')
+      ElMessage.success(t('studio.saved'))
     } else {
       await api.createProject(toInput(), auth.user)
-      ElMessage.success('Project created.')
+      ElMessage.success(t('studio.created'))
     }
-    router.push('/admin/projects')
+    router.push('/studio/projects')
   } catch (e: unknown) {
-    const msg = e instanceof Error ? e.message : 'Could not save project.'
+    const msg = e instanceof Error ? e.message : t('studio.noPermission')
     ElMessage.error(msg)
   } finally {
     saving.value = false
@@ -249,9 +240,18 @@ onMounted(async () => {
   categories.value = await api.categories()
   if (isEdit.value) {
     const id = String(route.params.id)
-    const res = await api.projects({ pageSize: 50 })
-    const target = res.items.find((p) => p.id === id)
-    if (target) fillFromProject(target)
+    const target = await api.projectById(id)
+    if (!target) {
+      ElMessage.error(t('studio.notFound'))
+      router.push('/studio/projects')
+      return
+    }
+    if (auth.user && auth.user.role !== 'admin' && target.author.id !== auth.user.id) {
+      ElMessage.error(t('studio.noPermission'))
+      router.push('/studio/projects')
+      return
+    }
+    fillFromProject(target)
   }
 })
 </script>

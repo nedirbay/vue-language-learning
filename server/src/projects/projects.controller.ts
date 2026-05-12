@@ -51,8 +51,15 @@ export class ProjectsController {
   }
 
   @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Get('mine/list')
+  mine(@CurrentUser() user: PublicUser) {
+    return this.projects.listByAuthor(user.id)
+  }
+
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'USER')
   @Post()
   create(@CurrentUser() user: PublicUser, @Body() dto: CreateProjectDto) {
     return this.projects.create(user.id, dto)
@@ -60,17 +67,21 @@ export class ProjectsController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'USER')
   @Patch(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateProjectDto) {
-    return this.projects.update(id, dto)
+  update(
+    @CurrentUser() user: PublicUser,
+    @Param('id') id: string,
+    @Body() dto: UpdateProjectDto,
+  ) {
+    return this.projects.update(id, dto, user)
   }
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  @Roles('ADMIN', 'USER')
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.projects.remove(id)
+  remove(@CurrentUser() user: PublicUser, @Param('id') id: string) {
+    return this.projects.remove(id, user)
   }
 }
