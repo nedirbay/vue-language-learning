@@ -2,6 +2,13 @@
   <RouterView />
 </template>
 
-<style>
-/* Global styles can be added here */
-</style>
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { RouterView } from 'vue-router'
+import { useThemeStore } from '@/stores/theme'
+
+const theme = useThemeStore()
+onMounted(() => {
+  theme.init()
+})
+</script>
