@@ -2,24 +2,27 @@
   <div class="projects-page">
     <header class="page-header">
       <div class="page-header-inner">
-        <h1>All projects</h1>
+        <h1>{{ $t('nav.projects') }}</h1>
         <p class="muted">
-          Production-ready templates, tools, and open-source resources — searchable and
-          filterable.
+          {{ $t('hero.sub') }}
         </p>
       </div>
     </header>
 
     <section class="filters">
       <div class="filters-inner">
-        <div class="search">
-          <el-icon><Search /></el-icon>
+        <div class="search-container">
           <el-input
-            v-model="search"
-            placeholder="Search projects, tech, descriptions…"
+            v-model="searchInput"
+            :placeholder="$t('common.search') + '...'"
             clearable
             size="large"
-          />
+            @keyup.enter="handleSearch"
+          >
+            <template #append>
+              <el-button :icon="Search" @click="handleSearch">{{ $t('common.search') }}</el-button>
+            </template>
+          </el-input>
         </div>
 
         <div class="filter-row">
@@ -30,11 +33,11 @@
           />
           <el-select
             v-model="category"
-            placeholder="All categories"
+            :placeholder="$t('common.allCategories')"
             clearable
             class="w-44"
           >
-            <el-option label="All categories" value="all" />
+            <el-option :label="$t('common.allCategories')" value="all" />
             <el-option
               v-for="c in categories"
               :key="c.id"
@@ -42,7 +45,7 @@
               :value="c.slug"
             />
           </el-select>
-          <el-select v-model="tech" placeholder="Any tech" clearable class="w-44">
+          <el-select v-model="tech" :placeholder="$t('common.anyTech')" clearable class="w-44">
             <el-option
               v-for="t in techOptions"
               :key="t"
@@ -50,11 +53,11 @@
               :value="t"
             />
           </el-select>
-          <el-select v-model="sort" placeholder="Sort by" class="w-40">
-            <el-option label="Latest" value="latest" />
-            <el-option label="Popular" value="popular" />
-            <el-option label="Top rated" value="top_rated" />
-            <el-option label="Most downloaded" value="most_downloaded" />
+          <el-select v-model="sort" :placeholder="$t('common.sortBy')" class="w-40">
+            <el-option :label="$t('common.latest')" value="latest" />
+            <el-option :label="$t('common.popular')" value="popular" />
+            <el-option :label="$t('common.topRated')" value="top_rated" />
+            <el-option :label="$t('common.mostDownloaded')" value="most_downloaded" />
           </el-select>
         </div>
       </div>
@@ -63,7 +66,7 @@
     <section class="results">
       <div class="results-inner">
         <div class="results-meta muted">
-          {{ total }} {{ total === 1 ? 'project' : 'projects' }} found
+          {{ total === 1 ? $t('common.projectFound') : $t('common.projectsFound', { count: total }) }}
         </div>
 
         <div v-if="loading" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -74,9 +77,9 @@
           class="empty surface"
         >
           <el-icon :size="36" class="muted"><Box /></el-icon>
-          <h3>No projects match your filters</h3>
-          <p class="muted">Try clearing filters or searching for something else.</p>
-          <el-button type="primary" plain @click="resetFilters">Reset filters</el-button>
+          <h3>{{ $t('common.noResults') }}</h3>
+          <p class="muted">{{ $t('common.tryClearing') }}</p>
+          <el-button type="primary" plain @click="resetFilters">{{ $t('common.resetFilters') }}</el-button>
         </div>
         <div v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <ProjectCard v-for="p in projects" :key="p.id" :project="p" />
@@ -99,6 +102,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { Box, Search } from '@element-plus/icons-vue'
 import ProjectCard from '@/components/ProjectCard.vue'
 import { api } from '@/api'
@@ -108,6 +112,7 @@ const route = useRoute()
 const router = useRouter()
 
 const search = ref('')
+const searchInput = ref('')
 const pricing = ref<ProjectPricingType | 'all'>('all')
 const category = ref<string>('all')
 const tech = ref<string>('')
@@ -120,12 +125,14 @@ const categories = ref<Category[]>([])
 const total = ref(0)
 const loading = ref(true)
 
-const pricingOptions = [
-  { label: 'All', value: 'all' },
-  { label: 'Free', value: 'free' },
-  { label: 'Paid', value: 'paid' },
-  { label: 'Open source', value: 'open_source' },
-]
+const { t } = useI18n()
+
+const pricingOptions = computed(() => [
+  { label: t('common.all'), value: 'all' },
+  { label: t('common.free'), value: 'free' },
+  { label: t('common.paid'), value: 'paid' },
+  { label: t('common.openSource'), value: 'open_source' },
+])
 
 const techOptions = [
   'Vue 3',
@@ -143,7 +150,10 @@ const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize))
 
 function readQuery(): void {
   const q = route.query
-  if (typeof q.search === 'string') search.value = q.search
+  if (typeof q.search === 'string') {
+    search.value = q.search
+    searchInput.value = q.search
+  }
   if (typeof q.pricing === 'string') pricing.value = q.pricing as ProjectPricingType | 'all'
   if (typeof q.category === 'string') category.value = q.category
   if (typeof q.tech === 'string') tech.value = q.tech
@@ -181,8 +191,13 @@ async function load(): Promise<void> {
   }
 }
 
+function handleSearch(): void {
+  search.value = searchInput.value
+}
+
 function resetFilters(): void {
   search.value = ''
+  searchInput.value = ''
   pricing.value = 'all'
   category.value = 'all'
   tech.value = ''
@@ -235,19 +250,28 @@ h1 {
   flex-direction: column;
   gap: 14px;
 }
-.search {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 16px;
-  border: 1px solid var(--app-border);
-  background: var(--app-surface);
-  border-radius: 14px;
+.search-container {
+  width: 100%;
+  margin-bottom: 4px;
 }
-.search :deep(.el-input__wrapper) {
-  background: transparent;
-  box-shadow: none !important;
-  padding: 0;
+.search-container :deep(.el-input-group__append) {
+  background-color: var(--app-accent);
+  color: white;
+  border-color: var(--app-accent);
+  font-weight: 600;
+  padding: 0 24px;
+}
+.search-container :deep(.el-input-group__append .el-button) {
+  border: none;
+  margin: 0;
+  color: inherit;
+}
+.search-container :deep(.el-input__wrapper) {
+  border-radius: 14px 0 0 14px;
+  padding-left: 16px;
+}
+.search-container :deep(.el-input-group__append) {
+  border-radius: 0 14px 14px 0;
 }
 .filter-row {
   display: flex;

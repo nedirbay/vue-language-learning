@@ -4,25 +4,25 @@
       <el-skeleton :rows="6" animated />
     </div>
     <div v-else-if="!project" class="not-found">
-      <h2>Project not found</h2>
-      <p class="muted">The project you're looking for may have been removed.</p>
-      <RouterLink to="/projects"><el-button>Back to projects</el-button></RouterLink>
+      <h2>{{ $t('common.noResults') }}</h2>
+      <p class="muted">{{ $t('common.tryClearing') }}</p>
+      <RouterLink to="/projects"><el-button>{{ $t('common.resetFilters') }}</el-button></RouterLink>
     </div>
     <article v-else class="detail">
-      <!-- HERO -->
-      <section class="hero">
-        <div class="hero-inner">
-          <RouterLink to="/projects" class="back-link">
-            <el-icon><ArrowLeft /></el-icon>
-            All projects
-          </RouterLink>
+      <div class="container">
+        <div class="main-grid">
+          <!-- LEFT COLUMN -->
+          <div class="left-col">
+            <header class="header">
+              <RouterLink to="/projects" class="back-link">
+                <el-icon><ArrowLeft /></el-icon>
+                {{ $t('nav.projects') }}
+              </RouterLink>
 
-          <div class="hero-grid">
-            <div class="hero-text">
               <div class="badges">
                 <span class="badge" :class="pricingBadgeClass">{{ pricingLabel }}</span>
                 <span class="badge badge-cat">{{ project.category.name }}</span>
-                <span v-if="project.featured" class="badge badge-accent">Featured</span>
+                <span v-if="project.featured" class="badge badge-accent">{{ $t('common.popular') }}</span>
               </div>
               <h1 class="title">{{ project.title }}</h1>
               <p class="subtitle">{{ project.shortDescription }}</p>
@@ -32,7 +32,7 @@
                   <el-avatar :size="32" :src="project.author.avatarUrl" />
                   <div class="leading-tight">
                     <div class="text-sm font-semibold">{{ project.author.fullName }}</div>
-                    <div class="text-xs muted">Author</div>
+                    <div class="text-xs muted">{{ $t('common.author') }}</div>
                   </div>
                 </div>
                 <div class="stat-pill">
@@ -49,69 +49,9 @@
                   <span>{{ formatNumber(project.viewCount) }}</span>
                 </div>
               </div>
-            </div>
+            </header>
 
-            <div class="purchase-card surface">
-              <div class="price">
-                {{ formatPrice(project.priceCents, project.currency) }}
-                <span v-if="project.pricingType === 'paid'" class="text-sm muted">one-time</span>
-              </div>
-              <div class="actions">
-                <template v-if="project.pricingType === 'paid'">
-                  <el-button
-                    type="primary"
-                    size="large"
-                    :loading="checkoutLoading"
-                    class="w-full"
-                    @click="buy"
-                  >
-                    <el-icon class="mr-1"><Money /></el-icon>
-                    Buy & download
-                  </el-button>
-                </template>
-                <template v-else>
-                  <el-button
-                    type="primary"
-                    size="large"
-                    class="w-full"
-                    @click="download"
-                  >
-                    <el-icon class="mr-1"><Download /></el-icon>
-                    Free download
-                  </el-button>
-                </template>
-                <el-button
-                  size="large"
-                  class="w-full"
-                  @click="toggleFav"
-                  :type="isFav ? 'warning' : 'default'"
-                  plain
-                >
-                  <el-icon class="mr-1"><Star /></el-icon>
-                  {{ isFav ? 'Saved' : 'Save to favorites' }}
-                </el-button>
-              </div>
-              <div class="links">
-                <a v-if="project.liveDemoUrl" :href="project.liveDemoUrl" target="_blank" rel="noopener">
-                  <el-icon><Link /></el-icon> Live demo
-                </a>
-                <a v-if="project.githubUrl" :href="project.githubUrl" target="_blank" rel="noopener">
-                  <el-icon><Promotion /></el-icon> GitHub
-                </a>
-                <a v-if="project.documentationUrl" :href="project.documentationUrl" target="_blank" rel="noopener">
-                  <el-icon><Document /></el-icon> Docs
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- CONTENT -->
-      <section class="content">
-        <div class="content-inner">
-          <div class="content-grid">
-            <main class="main-col">
+            <main class="main-content">
               <!-- Cover image -->
               <div class="cover surface overflow-hidden">
                 <img :src="project.coverImageUrl" :alt="project.title" />
@@ -119,11 +59,11 @@
 
               <!-- Tabs -->
               <el-tabs v-model="activeTab" class="tabs">
-                <el-tab-pane label="Overview" name="overview">
+                <el-tab-pane :label="$t('project.overview')" name="overview">
                   <div class="prose-md" v-html="markdown" />
                 </el-tab-pane>
-                <el-tab-pane :label="`Reviews (${reviews.length})`" name="reviews">
-                  <div v-if="reviews.length === 0" class="muted">No reviews yet.</div>
+                <el-tab-pane :label="`${$t('project.reviews')} (${reviews.length})`" name="reviews">
+                  <div v-if="reviews.length === 0" class="muted">{{ $t('project.noReviews') }}</div>
                   <div v-else class="reviews">
                     <article v-for="r in reviews" :key="r.id" class="review surface">
                       <header class="flex items-start gap-3">
@@ -142,7 +82,7 @@
                     </article>
                   </div>
                 </el-tab-pane>
-                <el-tab-pane label="Changelog" name="changelog">
+                <el-tab-pane :label="$t('project.changelog')" name="changelog">
                   <div class="changelog">
                     <div v-for="entry in project.changelog" :key="entry.version" class="change-entry">
                       <div class="change-head">
@@ -153,7 +93,7 @@
                     </div>
                   </div>
                 </el-tab-pane>
-                <el-tab-pane :label="`Media (${mediaCount})`" name="media">
+                <el-tab-pane :label="`${$t('project.media')} (${mediaCount})`" name="media">
                   <div v-if="project.videoUrl" class="media-video">
                     <video
                       :src="project.videoUrl"
@@ -187,34 +127,87 @@
                 </el-tab-pane>
               </el-tabs>
             </main>
-
-            <aside class="side-col">
-              <div class="info-card surface">
-                <h3>Tech stack</h3>
-                <div class="chips">
-                  <span v-for="t in project.techStack" :key="t" class="chip">{{ t }}</span>
-                </div>
-              </div>
-              <div class="info-card surface">
-                <h3>Tags</h3>
-                <div class="chips">
-                  <span v-for="t in project.tags" :key="t.id" class="chip soft">#{{ t.name }}</span>
-                </div>
-              </div>
-              <div class="info-card surface">
-                <h3>Highlights</h3>
-                <ul class="feature-list">
-                  <li v-for="f in project.features" :key="f">
-                    <el-icon><CircleCheck /></el-icon>
-                    {{ f }}
-                  </li>
-                </ul>
-              </div>
-
-            </aside>
           </div>
+
+          <!-- RIGHT COLUMN -->
+          <aside class="side-col">
+            <div class="purchase-card surface">
+              <div class="price">
+                {{ formatPrice(project.priceCents, project.currency) }}
+                <span v-if="project.pricingType === 'paid'" class="text-sm muted">{{ $t('project.oneTime') }}</span>
+              </div>
+              <div class="actions">
+                <template v-if="project.pricingType === 'paid'">
+                  <el-button
+                    type="primary"
+                    size="large"
+                    :loading="checkoutLoading"
+                    class="w-full"
+                    @click="buy"
+                  >
+                    <el-icon class="mr-1"><Money /></el-icon>
+                    {{ $t('project.buyNow') }}
+                  </el-button>
+                </template>
+                <template v-else>
+                  <el-button
+                    type="primary"
+                    size="large"
+                    class="w-full"
+                    @click="download"
+                  >
+                    <el-icon class="mr-1"><Download /></el-icon>
+                    {{ $t('project.freeDownload') }}
+                  </el-button>
+                </template>
+                <el-button
+                  size="large"
+                  class="w-full"
+                  @click="toggleFav"
+                  :type="isFav ? 'warning' : 'default'"
+                  plain
+                >
+                  <el-icon class="mr-1"><Star /></el-icon>
+                  {{ isFav ? $t('project.saved') : $t('project.saveToFav') }}
+                </el-button>
+              </div>
+              <div class="links">
+                <a v-if="project.liveDemoUrl" :href="project.liveDemoUrl" target="_blank" rel="noopener">
+                  <el-icon><Link /></el-icon> {{ $t('project.liveDemo') }}
+                </a>
+                <a v-if="project.githubUrl" :href="project.githubUrl" target="_blank" rel="noopener">
+                  <el-icon><Promotion /></el-icon> {{ $t('auth.github') }}
+                </a>
+                <a v-if="project.documentationUrl" :href="project.documentationUrl" target="_blank" rel="noopener">
+                  <el-icon><Document /></el-icon> {{ $t('project.docs') }}
+                </a>
+              </div>
+            </div>
+
+            <div class="info-card surface">
+              <h3>{{ $t('project.techStack') }}</h3>
+              <div class="chips">
+                <span v-for="t in project.techStack" :key="t" class="chip">{{ t }}</span>
+              </div>
+            </div>
+            <div class="info-card surface">
+              <h3>{{ $t('project.tags') }}</h3>
+              <div class="chips">
+                <span v-for="t in project.tags" :key="t.id" class="chip soft">#{{ t.name }}</span>
+              </div>
+            </div>
+            <div class="info-card surface">
+              <h3>{{ $t('project.highlights') }}</h3>
+              <ul class="feature-list">
+                <li v-for="f in project.features" :key="f">
+                  <el-icon><CircleCheck /></el-icon>
+                  {{ f }}
+                </li>
+              </ul>
+            </div>
+          </aside>
         </div>
-      </section>
+      </div>
     </article>
   </div>
 </template>
@@ -222,6 +215,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import {
   ArrowLeft,
   CircleCheck,
@@ -248,6 +242,7 @@ import {
 import { useAuthStore } from '@/stores/auth'
 import { useFavoritesStore } from '@/stores/favorites'
 
+const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
@@ -275,12 +270,12 @@ const pricingLabel = computed(() => {
   if (!project.value) return ''
   switch (project.value.pricingType) {
     case 'paid':
-      return 'Paid'
+      return t('common.paid')
     case 'open_source':
-      return 'Open Source'
+      return t('common.openSource')
     case 'free':
     default:
-      return 'Free'
+      return t('common.free')
   }
 })
 
@@ -319,7 +314,7 @@ function toggleFav(): void {
 async function buy(): Promise<void> {
   if (!project.value) return
   if (!auth.isAuthenticated) {
-    ElMessage.warning('Please sign in to purchase.')
+    ElMessage.warning(t('auth.pleaseSignInToPurchase'))
     router.push({ name: 'login', query: { redirect: route.fullPath } })
     return
   }
@@ -328,7 +323,7 @@ async function buy(): Promise<void> {
     const session = await api.checkoutSession(project.value.id)
     window.location.href = session.url
   } catch {
-    ElMessage.error('Could not start checkout. Try again.')
+    ElMessage.error(t('project.checkoutError'))
   } finally {
     checkoutLoading.value = false
   }
@@ -340,7 +335,7 @@ function download(): void {
   if (url) {
     window.open(url, '_blank', 'noopener')
   } else {
-    ElMessage.info('Download will be emailed shortly.')
+    ElMessage.info(t('project.downloadEmailed'))
   }
 }
 
@@ -358,12 +353,25 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.hero {
-  padding: 56px 24px 24px;
-}
-.hero-inner {
+.container {
   max-width: 1280px;
   margin: 0 auto;
+  padding: 40px 24px;
+}
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 32px;
+  align-items: start;
+}
+@media (max-width: 1000px) {
+  .main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.header {
+  margin-bottom: 32px;
 }
 .back-link {
   display: inline-flex;
@@ -371,21 +379,19 @@ onMounted(() => {
   gap: 6px;
   color: var(--app-text-muted);
   font-size: 0.9rem;
-  margin-bottom: 18px;
+  margin-bottom: 24px;
 }
 .back-link:hover {
   color: var(--app-text);
 }
-.hero-grid {
-  display: grid;
-  grid-template-columns: 1fr 340px;
-  gap: 32px;
-  align-items: start;
-}
-@media (max-width: 900px) {
-  .hero-grid {
-    grid-template-columns: 1fr;
-  }
+
+.side-col {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: sticky;
+  top: 24px;
+  margin-top: 60px;
 }
 
 .badges {
@@ -472,11 +478,6 @@ html.dark .badge-oss {
 
 .purchase-card {
   padding: 24px;
-  position: sticky;
-  top: 88px;
-  align-self: start;
-  max-height: calc(100vh - 100px);
-  overflow-y: auto;
 }
 .price {
   font-size: 1.8rem;
@@ -494,8 +495,14 @@ html.dark .badge-oss {
 .actions {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   margin-bottom: 18px;
+}
+.actions :deep(.el-button + .el-button) {
+  margin-left: 0;
+}
+.w-full {
+  width: 100%;
 }
 .links {
   display: flex;
@@ -514,31 +521,6 @@ html.dark .badge-oss {
 }
 .links a:hover {
   color: var(--app-accent);
-}
-
-/* CONTENT */
-.content {
-  padding: 32px 24px 64px;
-}
-.content-inner {
-  max-width: 1280px;
-  margin: 0 auto;
-}
-.content-grid {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 32px;
-  align-items: start;
-}
-@media (max-width: 900px) {
-  .content-grid {
-    grid-template-columns: 1fr;
-  }
-}
-.side-col {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
 }
 .cover {
   margin-bottom: 24px;

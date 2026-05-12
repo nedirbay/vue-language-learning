@@ -2,12 +2,10 @@
   <div class="about-page">
     <section class="hero">
       <div class="hero-inner">
-        <span class="eyebrow">About DevHub</span>
-        <h1>A developer-first marketplace.</h1>
+        <span class="eyebrow">{{ $t('nav.about') }} DevHub</span>
+        <h1>{{ $t('about.title') }}</h1>
         <p class="lead muted">
-          DevHub is where I share the projects I build, the tools I rely on, and the
-          open-source resources that taught me. It's a personal showcase — and a
-          marketplace for the templates and starters I sell to fund more open-source work.
+          {{ $t('about.lead') }}
         </p>
       </div>
     </section>
@@ -27,11 +25,11 @@
     <section class="cta-section">
       <div class="cta-inner surface">
         <div>
-          <h3>Want to work together?</h3>
-          <p class="muted">I'm open to consulting and partnerships. Drop me a line.</p>
+          <h3>{{ $t('about.ctaTitle') }}</h3>
+          <p class="muted">{{ $t('about.ctaSub') }}</p>
         </div>
-        <a href="mailto:hello@devhub.dev">
-          <el-button type="primary" round size="large">Email me</el-button>
+        <a href="mailto:nedirbay0098@gmail.com">
+          <el-button type="primary" round size="large">{{ $t('about.emailMe') }}</el-button>
         </a>
       </div>
     </section>
@@ -39,30 +37,34 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { Aim, Lock, MagicStick, Sunny } from '@element-plus/icons-vue'
 
-const values = [
+const { t } = useI18n()
+
+const values = computed(() => [
   {
     icon: Aim,
-    title: 'Built with intent',
-    body: 'No filler. Every template I publish is one I actually use in production.',
+    title: t('about.values.intent.title'),
+    body: t('about.values.intent.body'),
   },
   {
     icon: Lock,
-    title: 'Open by default',
-    body: 'Free tier for hobbyists, fair pricing for pros, source available wherever I can.',
+    title: t('about.values.open.title'),
+    body: t('about.values.open.body'),
   },
   {
     icon: MagicStick,
-    title: 'Designed end-to-end',
-    body: 'From data model to button radius — opinionated, cohesive, and consistent.',
+    title: t('about.values.designed.title'),
+    body: t('about.values.designed.body'),
   },
   {
     icon: Sunny,
-    title: 'Maintained, not abandoned',
-    body: 'Lifetime updates on paid templates. Regular releases on the rest.',
+    title: t('about.values.maintained.title'),
+    body: t('about.values.maintained.body'),
   },
-]
+])
 </script>
 
 <style scoped>

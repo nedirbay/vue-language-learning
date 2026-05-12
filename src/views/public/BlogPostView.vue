@@ -2,15 +2,15 @@
   <div class="blog-post-page">
     <div v-if="loading" class="loading"><el-skeleton :rows="6" animated /></div>
     <div v-else-if="!post" class="not-found">
-      <h2>Post not found</h2>
-      <RouterLink to="/blog"><el-button>Back to blog</el-button></RouterLink>
+      <h2>{{ $t('common.noResults') }}</h2>
+      <RouterLink to="/blog"><el-button>{{ $t('blog.back') }}</el-button></RouterLink>
     </div>
     <article v-else>
       <section class="hero">
         <div class="hero-inner">
           <RouterLink to="/blog" class="back-link">
             <el-icon><ArrowLeft /></el-icon>
-            All posts
+            {{ $t('blog.back') }}
           </RouterLink>
           <div class="tags">
             <span v-for="t in post.tags" :key="t" class="tag">{{ t }}</span>
@@ -21,7 +21,7 @@
             <el-avatar :size="32" :src="post.author.avatarUrl" />
             <span class="font-medium">{{ post.author.fullName }}</span>
             <span class="muted">· {{ formatDate(post.publishedAt) }}</span>
-            <span class="muted">· {{ post.readingMinutes }} min read</span>
+            <span class="muted">· {{ $t('blog.readTime', { minutes: post.readingMinutes }) }}</span>
           </div>
         </div>
       </section>

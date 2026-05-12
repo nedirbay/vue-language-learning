@@ -2,9 +2,9 @@
   <div class="blog-page">
     <header class="page-header">
       <div class="page-header-inner">
-        <span class="eyebrow">Writing</span>
-        <h1>Notes from the workshop</h1>
-        <p class="muted">Ideas, lessons, and tangents from building DevHub.</p>
+        <span class="eyebrow">{{ $t('blog.eyebrow') }}</span>
+        <h1>{{ $t('blog.title') }}</h1>
+        <p class="muted">{{ $t('blog.sub') }}</p>
       </div>
     </header>
 
@@ -31,7 +31,7 @@
                 <el-avatar :size="24" :src="post.author.avatarUrl" />
                 <span class="text-xs">{{ post.author.fullName }}</span>
                 <span class="text-xs muted">· {{ formatDate(post.publishedAt) }}</span>
-                <span class="text-xs muted">· {{ post.readingMinutes }} min</span>
+                <span class="text-xs muted">· {{ $t('blog.readTime', { minutes: post.readingMinutes }) }}</span>
               </div>
             </div>
           </RouterLink>

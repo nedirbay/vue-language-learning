@@ -1,0 +1,139 @@
+{
+  "nav": {
+    "projects": "Projeler",
+    "openSource": "Açık Kaynak",
+    "blog": "Blog",
+    "about": "Hakkında",
+    "signIn": "Giriş yap",
+    "getStarted": "Başla"
+  },
+  "hero": {
+    "eyebrow": "Beta sürümü · Geliştiriciler için tasarlandı",
+    "title": "Geliştir. Yayınla. Paylaş.",
+    "sub": "Yazılım projeleri, araçlar, şablonlar ve açık kaynaklı kaynaklar için modern bir pazar yeri ve vitrin. Ücretsiz veya ücretli — hepsi geliştirici odaklı tek bir yerde."
+  },
+  "common": {
+    "search": "Ara",
+    "browse": "Gözat",
+    "latest": "En yeni",
+    "popular": "Popüler",
+    "topRated": "En çok puan alan",
+    "mostDownloaded": "En çok indirilen",
+    "all": "Hepsi",
+    "free": "Ücretsiz",
+    "paid": "Ücretli",
+    "openSource": "Açık kaynak",
+    "allCategories": "Tüm kategoriler",
+    "anyTech": "Herhangi bir teknoloji",
+    "sortBy": "Sırala",
+    "resetFilters": "Filtreleri sıfırla",
+    "projectsFound": "{count} proje bulundu",
+    "projectFound": "1 proje bulundu",
+    "noResults": "Sonuç bulunamadı",
+    "tryClearing": "Filtreleri temizlemeyi veya başka bir şey aramayı deneyin.",
+    "author": "Yazar",
+    "takeMeHome": "Ana sayfaya dön",
+    "browseProjects": "Projelere göz at",
+    "pageNotFound": "Sayfa bulunamadı.",
+    "pageNotFoundSub": "Aradığınız sayfa mevcut değil veya taşınmış. Sizi ana sayfaya geri götürelim.",
+    "browseMore": "Daha fazla"
+  },
+  "auth": {
+    "welcomeBack": "Tekrar hoş geldiniz",
+    "createAccount": "Hesap oluştur",
+    "email": "E-posta",
+    "password": "Şifre",
+    "fullName": "Ad Soyad",
+    "username": "Kullanıcı adı",
+    "signIn": "Giriş yap",
+    "signUp": "Kayıt ol",
+    "forgotPassword": "Şifrenizi mi unuttunuz?",
+    "forgot": "Unuttunuz mu?",
+    "dontHaveAccount": "Hesabınız yok mu?",
+    "alreadyHaveAccount": "Zaten hesabınız var mı?",
+    "orContinueWith": "Veya şununla devam et",
+    "github": "GitHub",
+    "google": "Google",
+    "or": "veya",
+    "signInSub": "DevHub'a devam etmek için giriş yapın.",
+    "emailPlaceholder": "e-posta@adresiniz.com",
+    "passwordPlaceholder": "Şifreniz",
+    "passwordMin8": "En az 8 karakter",
+    "freeForever": "Sonsuza kadar ücretsiz. Kredi kartı gerekmez.",
+    "emailRequired": "E-posta gerekli",
+    "emailInvalid": "Geçerli bir e-posta girin",
+    "passwordRequired": "Şifre gerekli",
+    "passwordMin": "En az 4 karakter",
+    "loginFailed": "Giriş başarısız.",
+    "nameRequired": "Adınız gerekli",
+    "usernameRequired": "Kullanıcı adı gerekli",
+    "usernameMin": "En az 3 karakter",
+    "usernamePattern": "Sadece küçük harf, sayı ve alt çizgi",
+    "welcome": "DevHub'a hoş geldiniz!",
+    "registerFailed": "Kayıt başarısız.",
+    "pleaseSignInToPurchase": "Satın almak için lütfen giriş yapın."
+  },
+  "about": {
+    "title": "Geliştirici odaklı bir pazar yeri.",
+    "lead": "DevHub, oluşturduğum projeleri, güvendiğim araçları ve bana öğreten açık kaynaklı kaynakları paylaştığım yerdir. Bu kişisel bir vitrin ve daha fazla açık kaynaklı çalışmayı finanse etmek için sattığım şablonlar için bir pazar yeridir.",
+    "ctaTitle": "Birlikte çalışmak ister misiniz?",
+    "ctaSub": "Danışmanlık ve ortaklıklara açığım. Bana yazın.",
+    "emailMe": "Bana e-posta gönder",
+    "values": {
+      "intent": {
+        "title": "Amaçla inşa edildi",
+        "body": "Gereksiz detay yok. Yayınladığım her şablon aslında üretimde kullandığım bir şablondur."
+      },
+      "open": {
+        "title": "Varsayılan olarak açık",
+        "body": "Hobiler için ücretsiz, profesyoneller için adil fiyatlandırma, mümkün olan her yerde kaynak kod mevcut."
+      },
+      "designed": {
+        "title": "Uçtan uca tasarlandı",
+        "body": "Veri modelinden buton yarıçapına kadar — fikir sahibi, uyumlu ve tutarlı."
+      },
+      "maintained": {
+        "title": "Bakımı yapılıyor",
+        "body": "Ücretli şablonlarda ömür boyu güncellemeler. Diğerlerinde düzenli sürümler."
+      }
+    }
+  },
+  "project": {
+    "description": "Açıklama",
+    "techStack": "Teknoloji yığını",
+    "features": "Ana özellikler",
+    "links": "Proje bağlantıları",
+    "visitSite": "Siteyi ziyaret et",
+    "viewSource": "Kaynak kodunu görüntüle",
+    "price": "Fiyat",
+    "free": "Ücretsiz",
+    "getStarted": "Başla",
+    "buyNow": "Satın al ve indir",
+    "freeDownload": "Ücretsiz indir",
+    "related": "İlgili projeler",
+    "tags": "Etiketler",
+    "overview": "Genel Bakış",
+    "reviews": "Değerlendirmeler",
+    "noReviews": "Henüz değerlendirme yok.",
+    "changelog": "Değişiklik günlüğü",
+    "media": "Medya",
+    "oneTime": "tek seferlik",
+    "saved": "Kaydedildi",
+    "saveToFav": "Favorilere ekle",
+    "liveDemo": "Canlı demo",
+    "docs": "Belgeler",
+    "highlights": "Öne Çıkanlar",
+    "checkoutError": "Ödeme işlemi başlatılamadı. Tekrar deneyin.",
+    "downloadEmailed": "İndirme bağlantısı kısa süre içinde e-postanıza gönderilecektir.",
+    "purchaseSuccess": "Satın aldığınız için teşekkürler!",
+    "purchaseSuccessSub": "Faturanızı ve indirme bağlantısını e-postayla gönderdik. Bu projeye dilediğiniz zaman panelinizden de erişebilirsiniz.",
+    "goToPurchases": "Satın aldıklarım"
+  },
+  "blog": {
+    "eyebrow": "Yazılar",
+    "title": "Atölyeden notlar",
+    "sub": "DevHub'ı inşa ederken ortaya çıkan fikirler, dersler ve düşünceler.",
+    "readTime": "{minutes} dk",
+    "back": "Tüm yazılar"
+  }
+}

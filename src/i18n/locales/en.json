@@ -1,0 +1,139 @@
+{
+  "nav": {
+    "projects": "Projects",
+    "openSource": "Open source",
+    "blog": "Blog",
+    "about": "About",
+    "signIn": "Sign in",
+    "getStarted": "Get started"
+  },
+  "hero": {
+    "eyebrow": "Now in beta · Built for developers",
+    "title": "Build. Ship. Share.",
+    "sub": "A modern marketplace and showcase for software projects, tools, templates, and open-source resources. Free or paid — all in one developer-first home."
+  },
+  "common": {
+    "search": "Search",
+    "browse": "Browse",
+    "latest": "Latest",
+    "popular": "Popular",
+    "topRated": "Top rated",
+    "mostDownloaded": "Most downloaded",
+    "all": "All",
+    "free": "Free",
+    "paid": "Paid",
+    "openSource": "Open source",
+    "allCategories": "All categories",
+    "anyTech": "Any tech",
+    "sortBy": "Sort by",
+    "resetFilters": "Reset filters",
+    "projectsFound": "{count} projects found",
+    "projectFound": "1 project found",
+    "noResults": "No results match your filters",
+    "tryClearing": "Try clearing filters or searching for something else.",
+    "author": "Author",
+    "takeMeHome": "Take me home",
+    "browseProjects": "Browse projects",
+    "pageNotFound": "This page wandered off.",
+    "pageNotFoundSub": "The page you're looking for doesn't exist (or has been moved). Let's get you back home.",
+    "browseMore": "Browse more"
+  },
+  "auth": {
+    "welcomeBack": "Welcome back",
+    "createAccount": "Create account",
+    "email": "Email",
+    "password": "Password",
+    "fullName": "Full name",
+    "username": "Username",
+    "signIn": "Sign in",
+    "signUp": "Sign up",
+    "forgotPassword": "Forgot password?",
+    "forgot": "Forgot?",
+    "dontHaveAccount": "Don't have an account?",
+    "alreadyHaveAccount": "Already have an account?",
+    "orContinueWith": "Or continue with",
+    "github": "GitHub",
+    "google": "Google",
+    "or": "or",
+    "signInSub": "Sign in to continue to DevHub.",
+    "emailPlaceholder": "you@dev.team",
+    "passwordPlaceholder": "Your password",
+    "passwordMin8": "At least 8 characters",
+    "freeForever": "Free forever. No credit card required.",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Enter a valid email",
+    "passwordRequired": "Password is required",
+    "passwordMin": "At least 4 characters",
+    "loginFailed": "Sign in failed.",
+    "nameRequired": "Your name is required",
+    "usernameRequired": "Username is required",
+    "usernameMin": "At least 3 characters",
+    "usernamePattern": "Lowercase, numbers, underscore only",
+    "welcome": "Welcome to DevHub!",
+    "registerFailed": "Registration failed.",
+    "pleaseSignInToPurchase": "Please sign in to purchase."
+  },
+  "about": {
+    "title": "A developer-first marketplace.",
+    "lead": "DevHub is where I share the projects I build, the tools I rely on, and the open-source resources that taught me. It's a personal showcase — and a marketplace for the templates and starters I sell to fund more open-source work.",
+    "ctaTitle": "Want to work together?",
+    "ctaSub": "I'm open to consulting and partnerships. Drop me a line.",
+    "emailMe": "Email me",
+    "values": {
+      "intent": {
+        "title": "Built with intent",
+        "body": "No filler. Every template I publish is one I actually use in production."
+      },
+      "open": {
+        "title": "Open by default",
+        "body": "Free tier for hobbyists, fair pricing for pros, source available wherever I can."
+      },
+      "designed": {
+        "title": "Designed end-to-end",
+        "body": "From data model to button radius — opinionated, cohesive, and consistent."
+      },
+      "maintained": {
+        "title": "Maintained, not abandoned",
+        "body": "Lifetime updates on paid templates. Regular releases on the rest."
+      }
+    }
+  },
+  "project": {
+    "description": "Description",
+    "techStack": "Tech stack",
+    "features": "Key features",
+    "links": "Project links",
+    "visitSite": "Visit live site",
+    "viewSource": "View source code",
+    "price": "Price",
+    "free": "Free",
+    "getStarted": "Get started",
+    "buyNow": "Buy & download",
+    "freeDownload": "Free download",
+    "related": "Related projects",
+    "tags": "Tags",
+    "overview": "Overview",
+    "reviews": "Reviews",
+    "noReviews": "No reviews yet.",
+    "changelog": "Changelog",
+    "media": "Media",
+    "oneTime": "one-time",
+    "saved": "Saved",
+    "saveToFav": "Save to favorites",
+    "liveDemo": "Live demo",
+    "docs": "Docs",
+    "highlights": "Highlights",
+    "checkoutError": "Could not start checkout. Try again.",
+    "downloadEmailed": "Download will be emailed shortly.",
+    "purchaseSuccess": "Thank you for your purchase!",
+    "purchaseSuccessSub": "We've emailed your receipt and download link. You can also access this project from your dashboard at any time.",
+    "goToPurchases": "Go to my purchases"
+  },
+  "blog": {
+    "eyebrow": "Writing",
+    "title": "Notes from the workshop",
+    "sub": "Ideas, lessons, and tangents from building DevHub.",
+    "readTime": "{minutes} min",
+    "back": "All posts"
+  }
+}

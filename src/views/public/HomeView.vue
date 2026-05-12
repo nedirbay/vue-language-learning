@@ -4,23 +4,22 @@
     <section class="hero">
       <div class="bg-mesh" aria-hidden="true" />
       <div class="hero-inner">
-        <span class="eyebrow">Now in beta · Built for developers</span>
+        <span class="eyebrow">{{ $t('hero.eyebrow') }}</span>
         <h1 class="hero-title">
-          Build. <span class="text-gradient">Ship.</span> Share.
+          {{ $t('hero.title').split('.')[0] }}. <span class="text-gradient">{{ $t('hero.title').split('.')[1] }}.</span> {{ $t('hero.title').split('.')[2] }}.
         </h1>
         <p class="hero-sub">
-          A modern marketplace and showcase for software projects, tools, templates, and
-          open-source resources. Free or paid — all in one developer-first home.
+          {{ $t('hero.sub') }}
         </p>
         <div class="hero-cta">
           <RouterLink to="/projects">
             <el-button type="primary" size="large" round>
-              Browse projects
+              {{ $t('common.browse') }} {{ $t('nav.projects').toLowerCase() }}
               <el-icon class="ml-1"><ArrowRight /></el-icon>
             </el-button>
           </RouterLink>
           <RouterLink to="/open-source">
-            <el-button size="large" round>Explore open source</el-button>
+            <el-button size="large" round>{{ $t('common.browse') }} {{ $t('nav.openSource').toLowerCase() }}</el-button>
           </RouterLink>
         </div>
 
@@ -189,7 +188,7 @@
             <p class="cta-sub">
               Join thousands of developers using DevHub to launch products in days, not months.
             </p>
-            <div class="flex gap-3 flex-wrap">
+            <div class="flex gap-3 flex-wrap justify-center">
               <RouterLink to="/register">
                 <el-button type="primary" size="large" round>Create free account</el-button>
               </RouterLink>
@@ -207,6 +206,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import { ArrowRight, StarFilled } from '@element-plus/icons-vue'
 import ProjectCard from '@/components/ProjectCard.vue'
 import { api } from '@/api'
@@ -221,12 +221,13 @@ const stats = ref({ totalProjects: 0, totalUsers: 0, totalDownloads: 0, totalRev
 const loadingFeatured = ref(true)
 const loadingTrending = ref(true)
 
+const { t } = useI18n()
 const countries = computed(() => 64)
 
 const heroStats = computed(() => [
-  { label: 'Projects', value: formatNumber(stats.value.totalProjects) },
-  { label: 'Developers', value: formatNumber(stats.value.totalUsers) },
-  { label: 'Downloads', value: formatNumber(stats.value.totalDownloads) },
+  { label: t('nav.projects'), value: formatNumber(stats.value.totalProjects) },
+  { label: t('nav.about'), value: formatNumber(stats.value.totalUsers) },
+  { label: t('common.search'), value: formatNumber(stats.value.totalDownloads) },
 ])
 
 const format = (n: number): string => formatNumber(n)

@@ -19,6 +19,28 @@
       </nav>
 
       <div class="flex items-center gap-2">
+        <el-dropdown trigger="click" @command="handleLangChange">
+          <button class="lang-btn">
+            <img :src="currentLang.flag" :alt="currentLang.label" class="w-5 h-5 rounded-sm object-cover" />
+            <span class="hidden lg:inline text-xs font-bold uppercase">{{ currentLang.code }}</span>
+          </button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item
+                v-for="lang in languages"
+                :key="lang.code"
+                :command="lang"
+                :class="{ 'is-active': currentLang.code === lang.code }"
+              >
+                <div class="flex items-center gap-2">
+                  <img :src="lang.flag" :alt="lang.label" class="w-5 h-4 rounded-sm object-cover" />
+                  <span>{{ lang.label }}</span>
+                </div>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
+
         <ThemeToggle />
 
         <template v-if="auth.isAuthenticated">
@@ -61,7 +83,7 @@
         </template>
 
         <button
-          class="md:hidden mobile-toggle"
+          class="inline-flex md:hidden mobile-toggle"
           aria-label="Open menu"
           @click="mobileOpen = !mobileOpen"
         >
@@ -89,7 +111,7 @@
               <span>DevHub</span>
             </RouterLink>
             <button
-              class="mobile-toggle"
+              class="inline-flex mobile-toggle"
               aria-label="Close menu"
               @click="mobileOpen = false"
             >
@@ -127,10 +149,10 @@
             </template>
             <template v-else>
               <RouterLink to="/login" class="mobile-link" @click="mobileOpen = false">
-                Sign in
+                {{ $t('nav.signIn') }}
               </RouterLink>
               <RouterLink to="/register" class="mobile-link primary" @click="mobileOpen = false">
-                Get started
+                {{ $t('nav.getStarted') }}
               </RouterLink>
             </template>
           </div>
@@ -141,24 +163,45 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { useRouter, RouterLink } from 'vue-router'
-import { Close, Menu } from '@element-plus/icons-vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { useRouter } from 'vue-router'
 import ThemeToggle from '@/components/ThemeToggle.vue'
 import { useAuthStore } from '@/stores/auth'
+import { useI18n } from 'vue-i18n'
 
+import flagEn from '@/assets/flags/en.png'
+import flagRu from '@/assets/flags/ru.png'
+import flagTr from '@/assets/flags/tr.png'
+import flagTm from '@/assets/flags/tm.png'
+
+const { t, locale } = useI18n()
 const auth = useAuthStore()
 const router = useRouter()
 
-const navLinks = [
-  { to: '/projects', label: 'Projects' },
-  { to: '/open-source', label: 'Open source' },
-  { to: '/blog', label: 'Blog' },
-  { to: '/about', label: 'About' },
-]
+const navLinks = computed(() => [
+  { to: '/projects', label: t('nav.projects') },
+  { to: '/open-source', label: t('nav.openSource') },
+  { to: '/blog', label: t('nav.blog') },
+  { to: '/about', label: t('nav.about') },
+])
 
 const scrolled = ref(false)
 const mobileOpen = ref(false)
+
+const languages = [
+  { code: 'en', label: 'English', flag: flagEn },
+  { code: 'ru', label: 'Русский', flag: flagRu },
+  { code: 'tr', label: 'Türkçe', flag: flagTr },
+  { code: 'tm', label: 'Türkmen', flag: flagTm },
+]
+
+const currentLang = ref(languages.find((l) => l.code === locale.value) || languages[0])
+
+function handleLangChange(lang: (typeof languages)[0]): void {
+  currentLang.value = lang
+  locale.value = lang.code
+  localStorage.setItem('lang', lang.code)
+}
 
 function handleScroll(): void {
   scrolled.value = window.scrollY > 8
@@ -268,7 +311,6 @@ html.dark .site-header {
 }
 
 .mobile-toggle {
-  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 38px;
@@ -278,6 +320,23 @@ html.dark .site-header {
   background: var(--app-surface);
   cursor: pointer;
   color: var(--app-text);
+}
+
+.lang-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1px solid var(--app-border);
+  background: var(--app-surface);
+  cursor: pointer;
+  color: var(--app-text);
+  transition: all 160ms ease;
+}
+.lang-btn:hover {
+  background: var(--app-surface-2);
+  border-color: var(--app-border-strong);
 }
 </style>
 

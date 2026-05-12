@@ -2,16 +2,16 @@
   <div class="not-found-page">
     <div class="content">
       <div class="text-gradient code">404</div>
-      <h1>This page wandered off.</h1>
+      <h1>{{ $t('common.pageNotFound') }}</h1>
       <p class="muted">
-        The page you're looking for doesn't exist (or has been moved). Let's get you back home.
+        {{ $t('common.pageNotFoundSub') }}
       </p>
       <div class="actions">
         <RouterLink to="/">
-          <el-button type="primary" round size="large">Take me home</el-button>
+          <el-button type="primary" round size="large">{{ $t('common.takeMeHome') }}</el-button>
         </RouterLink>
         <RouterLink to="/projects">
-          <el-button round size="large">Browse projects</el-button>
+          <el-button round size="large">{{ $t('common.browseProjects') }}</el-button>
         </RouterLink>
       </div>
     </div>

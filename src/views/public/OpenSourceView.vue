@@ -2,11 +2,10 @@
   <div class="oss-page">
     <header class="page-header">
       <div class="page-header-inner">
-        <span class="eyebrow">Open source</span>
-        <h1>Curated resources we love</h1>
+        <span class="eyebrow">{{ $t('nav.openSource') }}</span>
+        <h1>{{ $t('hero.title').split('.')[0] }}.</h1>
         <p class="muted">
-          A hand-picked list of libraries, frameworks, and tools that power great
-          developer experiences. Star them, study them, build with them.
+          {{ $t('hero.sub') }}
         </p>
       </div>
     </header>
@@ -15,7 +14,7 @@
       <div class="filters-inner">
         <el-input
           v-model="search"
-          placeholder="Search resources, languages, topics…"
+          :placeholder="$t('common.search') + '...'"
           clearable
           size="large"
         >
@@ -31,7 +30,7 @@
             :class="{ active: activeCategory === cat }"
             @click="activeCategory = cat"
           >
-            {{ cat }}
+            {{ cat === 'All' ? $t('common.all') : cat }}
           </button>
         </div>
       </div>
@@ -44,46 +43,55 @@
         </div>
         <div v-else-if="filtered.length === 0" class="empty surface">
           <el-icon :size="36" class="muted"><Box /></el-icon>
-          <h3>No matches</h3>
-          <p class="muted">Try a different search or category.</p>
+          <h3>{{ $t('common.noResults') }}</h3>
+          <p class="muted">{{ $t('common.tryClearing') }}</p>
         </div>
         <div v-else class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <RouterLink
             v-for="r in filtered"
             :key="r.id"
             :to="{ name: 'open-source-detail', params: { slug: r.id } }"
-            class="oss-card surface"
+            class="oss-card surface overflow-hidden"
           >
-            <div class="oss-head">
-              <div class="oss-mark">
+            <!-- THUMBNAIL -->
+            <div class="card-thumb" v-if="r.thumbnailUrl">
+              <img :src="r.thumbnailUrl" :alt="r.name" />
+            </div>
+            <div class="card-thumb-placeholder" v-else>
+              <div class="oss-mark-sm">
                 <span>{{ r.name.charAt(0).toUpperCase() }}</span>
               </div>
-              <div class="leading-tight flex-1 min-w-0">
-                <div class="font-semibold text-sm truncate">{{ r.fullName }}</div>
-                <div class="text-xs muted">{{ r.category }} · {{ r.language }}</div>
+            </div>
+
+            <div class="card-body">
+              <div class="oss-head">
+                <div class="leading-tight flex-1 min-w-0">
+                  <div class="font-semibold text-sm truncate">{{ r.fullName }}</div>
+                  <div class="text-xs muted">{{ r.category }} · {{ r.language }}</div>
+                </div>
+                <button
+                  class="fav-btn"
+                  :class="{ active: favorites.has(r.id) }"
+                  :aria-label="favorites.has(r.id) ? 'Remove from favorites' : 'Add to favorites'"
+                  @click.prevent.stop="favorites.toggle(r.id)"
+                >
+                  <el-icon><Star /></el-icon>
+                </button>
               </div>
-              <button
-                class="fav-btn"
-                :class="{ active: favorites.has(r.id) }"
-                :aria-label="favorites.has(r.id) ? 'Remove from favorites' : 'Add to favorites'"
-                @click.prevent.stop="favorites.toggle(r.id)"
-              >
-                <el-icon><Star /></el-icon>
-              </button>
-            </div>
-            <p class="oss-desc">{{ r.description }}</p>
-            <div class="oss-meta">
-              <span class="inline-flex items-center gap-1">
-                <el-icon><StarFilled /></el-icon>
-                {{ formatNumber(r.stars) }}
-              </span>
-              <span class="inline-flex items-center gap-1">
-                <el-icon><Share /></el-icon>
-                {{ formatNumber(r.forks) }} forks
-              </span>
-            </div>
-            <div class="oss-tags">
-              <span v-for="t in r.topics.slice(0, 3)" :key="t" class="tag">#{{ t }}</span>
+              <p class="oss-desc">{{ r.description }}</p>
+              <div class="oss-meta">
+                <span class="inline-flex items-center gap-1">
+                  <el-icon><StarFilled /></el-icon>
+                  {{ formatNumber(r.stars) }}
+                </span>
+                <span class="inline-flex items-center gap-1">
+                  <el-icon><Share /></el-icon>
+                  {{ formatNumber(r.forks) }} forks
+                </span>
+              </div>
+              <div class="oss-tags">
+                <span v-for="t in r.topics.slice(0, 3)" :key="t" class="tag">#{{ t }}</span>
+              </div>
             </div>
           </RouterLink>
         </div>
@@ -208,40 +216,80 @@ h1 {
 .oss-card {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  padding: 20px;
+  padding: 0;
   transition: transform 200ms ease, border-color 200ms ease;
+  border-radius: 16px;
+  overflow: hidden;
 }
 .oss-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 12px 24px -12px rgba(0, 0, 0, 0.15);
 }
-.oss-head {
+
+.card-thumb {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: var(--app-surface-2);
+}
+.card-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-thumb-placeholder {
+  width: 100%;
+  aspect-ratio: 16 / 9;
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
 }
-.oss-mark {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: var(--app-surface-2);
-  border: 1px solid var(--app-border);
-  display: inline-flex;
+html.dark .card-thumb-placeholder {
+  background: linear-gradient(135deg, #1f2937, #111827);
+}
+
+.oss-mark-sm {
+  width: 48px;
+  height: 48px;
+  display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6366f1, #d946ef);
+  color: white;
   font-weight: 800;
-  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.2rem;
 }
+
+.card-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.oss-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
 .oss-desc {
-  font-size: 0.92rem;
+  font-size: 0.88rem;
   color: var(--app-text-muted);
   line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  height: 2.7em;
 }
 .oss-meta {
   display: flex;
   gap: 14px;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
   color: var(--app-text-muted);
 }
 .oss-tags {
@@ -250,7 +298,7 @@ h1 {
   flex-wrap: wrap;
 }
 .tag {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   padding: 2px 8px;
   border-radius: 6px;
   background: rgba(99, 102, 241, 0.1);

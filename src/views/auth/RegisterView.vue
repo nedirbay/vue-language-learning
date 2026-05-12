@@ -1,7 +1,7 @@
 <template>
   <div class="register">
-    <h1>Create your account</h1>
-    <p class="muted">Free forever. No credit card required.</p>
+    <h1>{{ $t('auth.createAccount') }}</h1>
+    <p class="muted">{{ $t('auth.freeForever') }}</p>
 
     <el-form
       ref="formRef"
@@ -11,21 +11,21 @@
       class="form"
       @submit.prevent="onSubmit"
     >
-      <el-form-item label="Full name" prop="fullName">
+      <el-form-item :label="$t('auth.fullName')" prop="fullName">
         <el-input v-model="form.fullName" placeholder="Ada Lovelace" size="large" />
       </el-form-item>
-      <el-form-item label="Username" prop="username">
+      <el-form-item :label="$t('auth.username')" prop="username">
         <el-input v-model="form.username" placeholder="ada" size="large" />
       </el-form-item>
-      <el-form-item label="Email" prop="email">
-        <el-input v-model="form.email" type="email" placeholder="you@dev.team" size="large" />
+      <el-form-item :label="$t('auth.email')" prop="email">
+        <el-input v-model="form.email" type="email" :placeholder="$t('auth.emailPlaceholder')" size="large" />
       </el-form-item>
-      <el-form-item label="Password" prop="password">
+      <el-form-item :label="$t('auth.password')" prop="password">
         <el-input
           v-model="form.password"
           type="password"
           show-password
-          placeholder="At least 8 characters"
+          :placeholder="$t('auth.passwordMin8')"
           size="large"
         />
       </el-form-item>
@@ -37,13 +37,13 @@
         :loading="auth.loading"
         @click="onSubmit"
       >
-        Create account
+        {{ $t('auth.createAccount') }}
       </el-button>
     </el-form>
 
     <p class="muted text-sm text-center mt-6">
-      Already a member?
-      <RouterLink to="/login" class="text-brand">Sign in</RouterLink>
+      {{ $t('auth.alreadyHaveAccount') }}
+      <RouterLink to="/login" class="text-brand">{{ $t('auth.signIn') }}</RouterLink>
     </p>
   </div>
 </template>
@@ -51,10 +51,12 @@
 <script setup lang="ts">
 import { reactive, ref } from 'vue'
 import { useRouter, RouterLink } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import type { FormInstance, FormRules } from 'element-plus'
 import { ElMessage } from 'element-plus'
 import { useAuthStore } from '@/stores/auth'
 
+const { t } = useI18n()
 const auth = useAuthStore()
 const router = useRouter()
 const formRef = ref<FormInstance>()
@@ -66,19 +68,19 @@ const form = reactive({
 })
 
 const rules: FormRules = {
-  fullName: [{ required: true, message: 'Your name', trigger: 'blur' }],
+  fullName: [{ required: true, message: t('auth.nameRequired'), trigger: 'blur' }],
   username: [
-    { required: true, message: 'Username is required', trigger: 'blur' },
-    { min: 3, message: 'At least 3 characters', trigger: 'blur' },
-    { pattern: /^[a-z0-9_]+$/, message: 'Lowercase, numbers, underscore only', trigger: 'blur' },
+    { required: true, message: t('auth.usernameRequired'), trigger: 'blur' },
+    { min: 3, message: t('auth.usernameMin'), trigger: 'blur' },
+    { pattern: /^[a-z0-9_]+$/, message: t('auth.usernamePattern'), trigger: 'blur' },
   ],
   email: [
-    { required: true, message: 'Email is required', trigger: 'blur' },
-    { type: 'email', message: 'Enter a valid email', trigger: 'blur' },
+    { required: true, message: t('auth.emailRequired'), trigger: 'blur' },
+    { type: 'email', message: t('auth.emailInvalid'), trigger: 'blur' },
   ],
   password: [
-    { required: true, message: 'Password is required', trigger: 'blur' },
-    { min: 8, message: 'At least 8 characters', trigger: 'blur' },
+    { required: true, message: t('auth.passwordRequired'), trigger: 'blur' },
+    { min: 8, message: t('auth.passwordMin8'), trigger: 'blur' },
   ],
 }
 
@@ -88,10 +90,10 @@ async function onSubmit(): Promise<void> {
   if (!valid) return
   try {
     await auth.register({ ...form })
-    ElMessage.success('Welcome to DevHub!')
+    ElMessage.success(t('auth.welcome'))
     router.push('/dashboard')
   } catch (e: unknown) {
-    const message = e instanceof Error ? e.message : 'Registration failed.'
+    const message = e instanceof Error ? e.message : t('auth.registerFailed')
     ElMessage.error(message)
   }
 }

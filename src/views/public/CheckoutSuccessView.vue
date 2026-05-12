@@ -4,17 +4,16 @@
       <div class="icon-wrap">
         <el-icon :size="42"><CircleCheck /></el-icon>
       </div>
-      <h1>Thank you for your purchase!</h1>
+      <h1>{{ $t('project.purchaseSuccess') }}</h1>
       <p class="muted">
-        We've emailed your receipt and download link. You can also access this project from
-        your dashboard at any time.
+        {{ $t('project.purchaseSuccessSub') }}
       </p>
       <div class="actions">
         <RouterLink to="/dashboard/purchases">
-          <el-button type="primary" size="large" round>Go to my purchases</el-button>
+          <el-button type="primary" size="large" round>{{ $t('project.goToPurchases') }}</el-button>
         </RouterLink>
         <RouterLink to="/projects">
-          <el-button size="large" round>Browse more</el-button>
+          <el-button size="large" round>{{ $t('common.browseMore') }}</el-button>
         </RouterLink>
       </div>
     </div>
